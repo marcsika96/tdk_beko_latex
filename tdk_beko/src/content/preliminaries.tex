@@ -3,7 +3,7 @@
 \section{Esettanulmány}
 A dolgozatban elért eredményeket a Train Benchmark \cite{szarnyas2018train} esettanulmány segítségével fogom bemutatni. Ez a benchmark azért jött létre, hogy összetudjuk hasonlítani különböző gráflekérdező rendszerek teljesítményét főleg időigény és memória felhasználás szempontjából. Ehhez többek között definiálja a vasút rendszer metamodelljét. Munkám során ezt a metamodellt felhasználva generáltam lekérdezéseimet, ezért bemutatom, hogy milyen elemekből áll. 
 
-\begin{figure}{htp}
+\begin{figure}
 	\centering
 	\includegraphics[width=0.7\textwidth]{figures/trainbenchmarkfig1}
 	\caption{Vasúti útvonal részlet (forrás: \cite{szarnyas2018train})}
@@ -14,7 +14,7 @@ A dolgozatban elért eredményeket a Train Benchmark \cite{szarnyas2018train} es
 
 A metamodellezés egy tecknika arra, hogy definiájunk modellező nyelveket, ahol a metamodell specifikálja a nyelv szintaktikáját. A trainbenchmark metamodellje \aref{fig:trainbenchmarkmetamodell} -es ábrán látható.
 
-\begin{figure}{htp}
+\begin{figure}
 	\centering
 	\includegraphics[width=0.7\textwidth]{figures/trainbenchmarkfig2}
 	\caption{A train benchmark metamodellje. a, tartalmazási hierarchia és relációk b, öröklési relációk (forrás: \cite{szarnyas2018train})}
@@ -23,9 +23,19 @@ A metamodellezés egy tecknika arra, hogy definiájunk modellező nyelveket, aho
 
 
 \section{Gráflekérdező rendszerek}
-\cite{neo4j}
-ennek a honlapnak a dolgai.
+A gráfok intuitív formalizációt nyújtanak modellezési szempontból arra, hogy úgy írhassuk le a világot ahogy az ember gondolkozik róla. Tehát mint dolgok (csomópontok) és köztük lévő kapcsolatok (élek) \cite{marton2017model}. A property gráf adatmodell kiterjeszti a gráfokat úgy, hogy címkéket/típusokat illetve tulajdonságokat ad a csúcsoknak és az éleknek. A gráf adatbázisok  alkalmasak tulajdonság gráfok tárolására, és az abban lévő adatok lekérdezésére komplex gráf minták használatával. Ilyen rendszerek például a    Neo4j \cite{neo4j}, OrientDB \cite{orientdb} és a  SparkSee \cite{sparksee}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\textwidth]{figures/tulajdonsággráfpélda}
+	\caption{Property gráf példa(forrás: \cite{marton2017model})}
+	\label{fig:tulajdonsággráfpélda}
+\end{figure}
+
+Ahhoz hogy jobban megérthessük mi is ez az adatmodell \aref{fig:tulajdonsággráfpélda} -es ábrán látható egy példa.
 \subsection{Neo4j}
+
+
 
 
 \section{Modellezés és metamodellezés}
