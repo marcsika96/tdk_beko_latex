@@ -1,0 +1,43 @@
+\chapter{\eloismeretek}
+
+\section{Esettanulmány}
+A dolgozatban elért eredményeket a Train Benchmark \cite{szarnyas2018train} esettanulmány segítségével fogom bemutatni. Ez a benchmark azért jött létre, hogy összetudjuk hasonlítani különböző gráflekérdező rendszerek teljesítményét főleg időigény és memória felhasználás szempontjából. Ehhez többek között definiálja a vasút rendszer metamodelljét. Munkám során ezt a metamodellt felhasználva generáltam lekérdezéseimet, ezért bemutatom, hogy milyen elemekből áll. 
+
+\begin{figure}{htp}
+	\centering
+	\includegraphics[width=0.7\textwidth]{figures/trainbenchmarkfig1}
+	\caption{Vasúti útvonal részlet (forrás: \cite{szarnyas2018train})}
+	\label{fig:trainbenchmark}
+\end{figure}
+
+ \Aref{fig:trainbenchmark}-es ábrán látható egy a trainbenchmark metamodelljére alapuló részlet. Ebben a kontextusban egy vasúti útvonal nem más mint szegmensek és váltók sorozata, illetve a belépést és a kilépést egy-egy szemafor jelzi. Ahhoz hogy biztonságos legyen a közlekedés szükség van szenzorokra, amelyek monitorozzák a különböző szegmensek és váltók kihasználtságát. Egy útvonal definiálásához ,a felsorolt elemeken kívül a váltók adott útvonalhoz tartozó pozícióját is el kell tárolnunk. Egy útvonal akkor aktív, ha a rendszerben a specifikációjának megfelelően állnak a váltók.
+
+A metamodellezés egy tecknika arra, hogy definiájunk modellező nyelveket, ahol a metamodell specifikálja a nyelv szintaktikáját. A trainbenchmark metamodellje \aref{fig:trainbenchmarkmetamodell} -es ábrán látható.
+
+\begin{figure}{htp}
+	\centering
+	\includegraphics[width=0.7\textwidth]{figures/trainbenchmarkfig2}
+	\caption{A train benchmark metamodellje. a, tartalmazási hierarchia és relációk b, öröklési relációk (forrás: \cite{szarnyas2018train})}
+	\label{fig:trainbenchmarkmetamodell}
+\end{figure}
+
+
+\section{Gráflekérdező rendszerek}
+\cite{neo4j}
+ennek a honlapnak a dolgai.
+\subsection{Neo4j}
+
+
+\section{Modellezés és metamodellezés}
+\subsection{Cypher query-k metamodellje}
+\subsection{xText}
+\subsection{\textsc{Viatra} jólformáltsági kényszerek}
+
+\section{Gráfgenerálás}
+
+ábra milyen bemenetek milyen kimenetek
+
+
+
+
+
