@@ -35,10 +35,30 @@ A gráfok intuitív formalizációt nyújtanak modellezési szempontból arra, h
 Ahhoz hogy jobban megérthessük mi is ez az adatmodell \aref{fig:tulajdonsággráfpélda} -es ábrán látható egy példa.
 \subsection{Neo4j}
 
+A Neo4J egy populáris NoSQL property gráf adatbázis és a Cypher lekérdező nyelvet kínálja lekérdezések írására. A Cypher egy magas szintű deklaratív lekérdező nyelv és mivel le van választava a lekérdező rendszerről, ezért az képes a Cypher nyelven írt lekérdezések optimalizálására. 
+A Cypher szintaxisa olyan gráf minták megírását teszi lehetővé, amelyeknek megértése nagyon egyszerű. \Aref{fig:példalekérdezes} -es példán egy olyan lekérdezést láthatunk,  ami az összes olyan vonat, szegmens párral tér vissza, ahol az adott vonat rajta van az adott szegmensen.  
+
+\begin{figure}
+	\begin{lstlisting}[style=viatrasmall]
+	MATCH (tr:Train)-[:ON]->(seg:Segment)
+	RETURN tr, seg	
+	\end{lstlisting}   
+	\caption{Példalekérdezés(forrás: \cite{marton2017model} )}
+	\label{fig:példalekérdezes}
+\end{figure}
+
+
+Thegoal of the openCypher project [25] is to provide a standardised specification of
+the Cypher language.
+
+
+
 
 
 
 \section{Modellezés és metamodellezés}
+
+
 \subsection{Cypher query-k metamodellje}
 \subsection{xText}
 \subsection{\textsc{Viatra} jólformáltsági kényszerek}
