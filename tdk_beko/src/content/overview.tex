@@ -2,6 +2,30 @@
 
 \section{Funkcionális áttekintés}
 
+Munkám célja hogy mutasson egy olyan koncepciót, amelynek segítségével lehetséges gráfmintaillesztő
+ rendszerek tesztelése több aspektusból. Ezt úgy viszem véghez, hogy a rendszer nyelvén generálok
+ mintákat/lekérdezéseket, amelyeket aztán a lekérdező motoron futtatok. Mivel generálás során nem 
+ akadály az hogy sok és diverz lekérdezést készítsek el ezért a nagy lekérdezéshalmaz alkalmassá válik
+ arra hogy teljesítményben tesztelje a lekérdező rendszereket. Illetve ha egyes lekérdezéseken nem tud
+ futtatni a rendszer akkor kiderül az is hogy milyen funkcionalitásokat nem fed még le. Illetve egy 
+ referencia implementáció segítségével azt is ellenőrizni tudjuk, hogy a megfelelő válaszolakt adja-e
+ a rendszer, hibás-e a működése. A koncepciómat egy Neo4J \cite{neo4j} gráf adatbázison mutatom be 
+ miközben a lekérdezéseket az ehhez kifejlesztet Cypher \cite{Cypher} nyelven generálom. 
+ 
+A generálást gráfok segítségével végzem. Ezért van szükségem a nyelv szintaktikájának metamodelljére,
+aminek alapján példánymodelleket tudok generálni az adott nyelv felépítését betartva. Azonban vannak 
+olyan szabályok amelyeket a metamodell nem fejez ki, betartásuk nélkül viszont a generált példánygráfok
+nem értelmezhetőek Cypher nyelvű lekérdezésekként. Ezen szabályok betartására jólformáltsági kényszereket 
+írok fel, amelyeket a generátor támpontként használ a lekérdezések készítése során. Ahhoz hogy mindezt 
+véghez tudjam vinni választanom kellett egy gráf generáló szoftvert ami kényszerek és egy metamodell
+alapján képes hatékonyan példánymodellek generállására. Ehhez a ViatraSolver nevű alkalmazást választottam,
+ami eclipse fejlesztői környezetben működik, a jólformálsági kényszereket pedig Viatra nyelven írtam fel.
+
+Miután a példánygráfok létrejönnek már csak le kell őket fordítani Cypher nyelvű lekérdezésekre.
+A fordítás során ki kell tölteni a gráfgenerátor által üresen hagyott értékeket. Illetve át parszolni a
+gráfokat egy .cypher típusú fájlba.  
+  
+
 \section{Blokkdiagram}
 
 \section{A tervezett alkalmazás felépítése}
