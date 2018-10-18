@@ -48,19 +48,33 @@ A Cypher szintaxisa olyan gráf minták megírását teszi lehetővé, amelyekne
 \end{figure}
 
 
-Thegoal of the openCypher project [25] is to provide a standardised specification of
-the Cypher language.
-
-
-
-
-
-
 \section{Modellezés és metamodellezés}
+A metamodellek definiálják a legfontosabb fogalmakat, relációkat és attribútumokat a cél domainen , hogy 
+specifikálják modellek alap struktúráját \cite{semerath2017formal}. Dolgozatomban az Eclipse Modeling Framework
+ (EMF) \cite{EMF} -öt használtam metamodellezésre.
+
 
 
 \subsection{Cypher query-k metamodellje}
+\Aref{fig:cyphermetamodell} -ös ábrán látható a korábban említett Cypher nyelv egyszerűsített metamodellje. A \mm{SinglePartQuery} elem reprezentálja a modell gyökerét. Egy ilyen elem két részből áll : Egy \mm{Match} és egy \mm{Return} elemből. A \mm{Match} elem minták összességéből áll (\mm{Pattern}), amelyek részekre (\mm{PatternPart}) bonthatóak. Egy ilyen részben pedig vagy tartalmaz változó deklarációt, vagy egy belső részt tartalmaz ami taltalmaz változó deklarációt. (\mm{Variable Declaration}). Ezáltal az összes változót a \mm{Match} elemen belül deklaráljuk. A \mm{Return} elem  pedig egy kifejezést (\mm{Expression}) tartalmaz, amelyben mindenképp szerepel egy változó referencia (\mm{VariableRef}) is, így összekötve egymással a \mm{Match} és a \mm{Return} elemet. 
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\textwidth]{figures/openCypherClassDiagram}
+	\caption{Cypher metamodell}
+	\label{fig:cyphermetamodell}
+\end{figure}
+
+
 \subsection{xText}
+Az Xtext keretrendszer programozási nyelvek  és  domain-specifikus nyelvek fejlesztésére készül. Az Xtext  
+egy erős nyelvtani szabályokkal rendelkező nyelvet használ az egyéedi nyelvtanok definiálására. Ezáltal
+egyszerre biztosít parszolót, linkelőt, helyesírásellenőrzőt és fordítót. És a felhasználó hatázohatja 
+meg a nyelvének célformátumát is.Ahhoz, hogy a Cypher nyelven megírt lekérdezéseket értelmezni lehessen 
+\aref{fig:cyphermetamodell}-ös metamodellen megismert elemek szintjén egy XText \cite{xText} keretrendszerben
+íródott nyelvtanra van szükség. A dolgozatomban a slizaa\cite{slizaa_2018} által készített nyelvtanra építettem.
+
+
 \subsection{\textsc{Viatra} jólformáltsági kényszerek}
 
 \section{Gráfgenerálás}
