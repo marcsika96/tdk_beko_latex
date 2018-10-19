@@ -2,26 +2,39 @@
 
 \section{Funkcionális áttekintés}
 
-Munkám célja hogy mutasson egy olyan koncepciót, amelynek segítségével lehetséges gráfmintaillesztő
- rendszerek tesztelése több aspektusból. Ezt úgy viszem véghez, hogy a rendszer nyelvén generálok
- mintákat/lekérdezéseket, amelyeket aztán a lekérdező motoron futtatok. Mivel generálás során nem 
- akadály az hogy sok és diverz lekérdezést készítsek el ezért a nagy lekérdezéshalmaz alkalmassá válik
- arra hogy teljesítményben tesztelje a lekérdező rendszereket. Illetve ha egyes lekérdezéseken nem tud
- futtatni a rendszer akkor kiderül az is hogy milyen funkcionalitásokat nem fed még le. Illetve egy 
- referencia implementáció segítségével azt is ellenőrizni tudjuk, hogy a megfelelő válaszolakt adja-e
- a rendszer, hibás-e a működése. A koncepciómat egy Neo4J \cite{neo4j} gráf adatbázison mutatom be 
- miközben a lekérdezéseket az ehhez kifejlesztet Cypher \cite{Cypher} nyelven generálom.
+Munkám célja hogy mutasson egy olyan megközelítést, amelynek segítségével lehetséges gráfmintaillesztő
+rendszerek tesztelése több aspektusból. Ezt úgy viszem véghez, hogy a rendszer nyelvén generálok
+mintákat/lekérdezéseket, amelyeket aztán a lekérdező motoron futtatok. A generálásnak az az előnye,
+hogy sok és diverz lekérdezést lehet így elkészíteni, ezért a nagy lekérdezéshalmaz alkalmassá válik
+arra hogy teljesítményben tesztelje a lekérdező rendszereket. Illetve ha egyes lekérdezéseken nem tud
+futtatni a rendszer akkor kiderül az is hogy milyen funkcionalitásokat nem fed még le. Egy 
+referencia implementáció segítségével azt is ellenőrizni tudjuk, hogy a megfelelő válaszokat adja-e
+a rendszer, hibás-e a működése. A megközelítésemet egy Neo4J \cite{neo4j} gráf adatbázison mutatom be 
+miközben a lekérdezéseket az ehhez kifejlesztet Cypher \cite{Cypher} nyelven generálom.
+
+Az elképzelést \aref{fig:funkcionalisAttekintes} ábrán mutatom be. A \textbf{Nyelvi specifikációt} a slizaa \cite{slizaa_2018} által készített openCypher EMF \cite{EMF} metamodell felhasználásával készítettem el. Az ott található metamodellt leszűkítettem a
+cypher nyelvű \mm{SinglePartQuery} lekérdezések metamodelljére. Az \textbf{esettanulmány szignatúráját} a trainbenchmark \cite{szarnyas2018train} által használt szignatúra felhasználásával készítettem el. A \textbf{lekérdezés generátort} bővebben a következő szekcióban mutatom be. A \textbf{generált lekérdezéseket} egyaránt 
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\textwidth]{figures/funkcionalisAttekintes}
+	\caption{Az elképzelés funkcionális áttekintése}
+	\label{fig:funkcionalisAttekintes}
+\end{figure}
  
-\begin{enumerate}
-	\item Nyelvi specifikáció
-	\item Szintaxis
-	\item Absztrakt Sintaxis \\
-	\\
-	Gráf
-	\item Modell 
-\end{enumerate}
  
-A generálást gráfok segítségével végzem. Ezért van szükségem a nyelv szintaktikájának metamodelljére,
+
+ 
+A generálást gráfok segítségével végzem,  a Viatra Solver keretrendszer felhasználásával. Ehhez első lépésben
+szükség van a nyelv specifikációjának formális megadására
+\begin{itemize}
+	\item \textbf{Metamodell:} 
+	\item \textbf{Metamodell:} 
+	\item \textbf{Metamodell:} 
+	\item \textbf{Metamodell:} 
+\end{itemize}
+
+
 aminek alapján példánymodelleket tudok generálni az adott nyelv felépítését betartva. Azonban vannak 
 olyan szabályok amelyeket a metamodell nem fejez ki, betartásuk nélkül viszont a generált példánygráfok
 nem értelmezhetőek Cypher nyelvű lekérdezésekként. Ezen szabályok betartására jólformáltsági kényszereket 
@@ -31,10 +44,9 @@ alapján képes hatékonyan példánymodellek generállására. Ehhez a ViatraSo
 ami eclipse fejlesztői környezetben működik, a jólformálsági kényszereket pedig Viatra nyelven írtam fel.
 
 Miután a példánygráfok létrejönnek már csak le kell őket fordítani Cypher nyelvű lekérdezésekre.
-A fordítás során ki kell tölteni a gráfgenerátor által üresen hagyott értékeket. Illetve át parszolni a
+A fordítás során ki kell tölteni a gráfgenerátor által üresen hagyott értékeket. Illetve ki kell sorosítani a
 gráfokat egy .cypher típusú fájlba.  
   
 
-\section{Blokkdiagram}
+\section{Lekérdezés generálási folyamat felépítése}
 
-\section{A tervezett alkalmazás felépítése}
