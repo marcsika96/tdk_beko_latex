@@ -25,39 +25,92 @@ A szűkítést a fenti lekérdezés alapján végeztem a következő metódussal
 
 
 \subsection{Jólformáltsági kényszerek betartása}
-itt egy összefoglaló pár mondatban, ha esetleg valaki kihagyta volna az előző fejezetet, hogy mit jelent az alcím. pl az alábbi:
+A gráfgenerátor másik bemenete olyan kényszerek halmaza, amelyek szükségesek ahhoz, hogy értelmes modelleket tudjunk generálni. Ezekre főleg azért van szükség, mert az Xtext-ben \cite{xText} íródott nyelvtan és a nyelvtan metamodellje közötti konverzió nem tökéletes. Ennek több oka is van: (1) A precíz metamodell meghatározása számításilag komoly kihívást jelent és nem is végezték el a keretrendszer megalkotói, (2) A metamodellnek hibás modellek leírására is alkalmasnak kell lennie (hiszen szerkesztés közben általában félkész modellek vannak a rendszerben) (3) A metamodell a modelleknek csak atz alap struktúráját (referencia hova mutathat) írja le bonyolultabb szabályok (összetett logikai kifejezések) meghatározására alkalmatlan.
 
-Ahhoz, hogy a nyelvtan alapján olyan modelleket tudjunk generálni, amelyeket vissza tudunk majd fordítani szintaktikailag helyes lekérdezésekre, ahhoz kényszereket kell felállítanunk, amelyek betartására kötelezzük a modellgenerátort.
-
-itt pedig a szerintem fontos kényszer
-
-magyarázat
-
-szerintem fontos kényszer
-
-magyarázat
-
-...
+Jólformálsági kényszerekre azért van szükség, mert nem minden a metamodellel leírható modell sorosítható Cypher nyelvű lekérdezéssé. Az Xtext Cypher nyelvtanban leírt parseolhatósági szabályokat át kell fordítani ASG-n értelmezett struktúrális kényszerekké. 
 
 
 
-Én a következő kényszereket írtam fel:
-\viatraStyle{pattern x(s:State)  {State(s);}}, ahol a \viatraStyle{s} változó jelöli a\ldots
 
 \begin{lstlisting}[style=viatrasmall]
-pattern goodReferenceToVariable(q : SinglePartQuery, match : Match, vari : VariableDeclaration,  variRef : VariableRef ){	
-	SinglePartQuery.readingClauses(q ,match);
-	Match.^pattern.patterns.^var(match, vari);
-	SinglePartQuery.^return.body.returnItems.items.expression(q , variRef);
-	VariableRef.variableRef(variRef, vari);
-}	
-
-@Constraint(severity = "error", key ={variRef}, message ="error")
-pattern notGoodReferenceToVari(variRef : VariableRef){
-	neg find goodReferenceToVariable(_, _, vari ,variRef );
-	VariableRef.variableRef(variRef,vari);
+pattern hasReference(retI : ReturnItem, variRef : Expression){
+VariableRef(variRef);
+ReturnItem.expression(retI, variRef);
 }
 
+@Constraint(severity ="error", key={ri}, message = "error")
+pattern hasNoReference(ri : ReturnItem){
+neg find hasReference(ri, _);
+}
+\end{lstlisting}
+
+A fenti kényszerre azért volt szükség, mert a metamodellben nem volt megadva, hogy a \cypherStyle{RETURN} szó után kötelező legalább egy változóra referálni is. Pedig ha nem referálnánk itt változót a \cypherStyle{MATCH} ágon megfogalmazott mintából, akkor nem lenne értelme a minta megírásának, illetve a válasznak sem.
+
+A felső minta meghatározza hogy hogyan néz ki egy olyan \viatraStyle{ReturnItem} aminek van \viatraStyle{VariableRef} a visszatérési értékében. Az alsó pedig egy kényszer, ami arra kényszeríti a generátort hogy eldobja az összes olyan modellt, amiben nem találja meg a felső mintát.
+
+\begin{lstlisting}[style=viatrasmall]
+pattern wellLookingPattern (^pattern : Pattern, patternElement : PatternElement){
+Pattern.patterns(^pattern,patternElement);
+}
+@Constraint pattern notWellLookingPattern(^pattern : Pattern){
+neg find wellLookingPattern(^pattern , _);
+}
+\end{lstlisting}
+
+A fenti kényszerre azért volt szükség, mert a metamodell alapján egy \viatraStyle{Pattern}-be a \viatraStyle{.patterns} tulajdonság beállításakor sok féle elem kerülhetett volna, viszont sok akár a mostaninál bonyolultabb példalekérdezés során sem volt precedens arra, hogy nem \viatraStyle{PatternElement} -ek kerültek bele. Ezért úgy döntöttem, hogy a konzisztensebb és gyorsabb generálás érdekében megtiltom a generátornak, hogy jóként fogadjon el más megoldást.
+
+\begin{lstlisting}[style=viatrasmall]
+pattern wellLookingPatternElement(patternElement : PatternElement, nodePattern : NodePattern){
+PatternElement.nodepattern(patternElement, nodePattern);
+}
+
+@Constraint pattern notWellLookingPatternElement(patternElement : PatternElement){
+neg find wellLookingPatternElement(patternElement, _);
+}
+\end{lstlisting}
+
+
+\begin{lstlisting}[style=viatrasmall]
+@Constraint(severity ="error", key={patternElement}, message = "error")
+pattern  patternElementHasVar(patternElement : PatternElement, variable : VariableDeclaration){
+PatternElement.^var(patternElement,variable);
+}
+
+@Constraint(severity ="error", key={patternElement}, message = "error")
+pattern  patternElementHasPart(patternElement : PatternElement, part : PatternPart){
+PatternElement.part(patternElement,part);
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=viatrasmall]
+pattern pe(pe:PatternElement) {
+PatternElement(pe);
+}
+
+@Constraint(severity ="error", key={patternPart}, message = "error")
+pattern notPatternElement( patternPart : PatternPart){
+neg find pe(patternPart);
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=viatrasmall]
+@Constraint(severity ="error", key={mapLiteral}, message = "error")
+pattern notWellLookingMapliteral(mapLiteral : MapLiteral, nodeLabel: NodeLabel){
+MapLiteral.nodeLabels(mapLiteral,nodeLabel);
+}
+
+\end{lstlisting}
+
+\begin{lstlisting}[style=viatrasmall]
+//ahhoz kell hogy ne ott legyene különböző 2 lekédrezés hogy milyen méllyen cíkmkézett
+pattern wellDeepMap(mapLiteralEnrty: MapLiteralEntry, string : StringLiteral){
+MapLiteralEntry.value(mapLiteralEnrty,string);
+}
+
+@Constraint(severity ="error", key={mapLiteralEnrty}, message = "error")
+pattern notWellDeepMap(mapLiteralEnrty : MapLiteralEntry){
+neg find wellDeepMap(mapLiteralEnrty, _);
+}
 \end{lstlisting}
 
 
