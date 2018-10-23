@@ -1,19 +1,28 @@
 \chapter{Gráflekérdezések automatikus generálása}
 \section{Lekérdezések generálása}
 
-\subsection{Nyelv minimalizásása}
-itt egy összefoglaló pár mondatban, ha esetleg valaki kihagyta volna az előző fejezetet, hogy mit jelent az alcím.
+\subsection{Tesztelni kívánt résznyelv kiválasztása}
 
-itt lesz egy olyan lekérdezés ami a maximuma annak amilyeneket generálni tudok.
+A gráfgenerátor egyik bemenete a tesztelni kívánt nyelvi fregmens metamodellje. Ahhoz, hogy hasznos tesztesetek állítsunk elő, szükséges a generátort egy konkrét feladatot ellátó modellek előállítására konfigurálni. (Ha az egész nyelvet használnánk akkor a lekérdezése érdektelen részletekből állna, például kommenteket, felesleges változó átnevezéseket, lekérdezéssel kapcsolatos metainformációkat generálna.) Munkám során tehát az első feladat az volt, hogy kiválasszam a Cyphernek egy olyan résznyelvét amellyel érdekes lekérdezéseket lehet generálni. Dolgozatomban olyan úgynevezett pozitív mintájú lekérdezések generálására koncentráltam, amelyek vizsgálják a csomópontok típusát illetve a csomópontok közötti kapcsolatok típusát. Ugyanis számos lekérdező nyelvben, mint például Cypher\cite{Cypher} és \textsc{VIATRA} \cite{viatra} ezek képezik a lekérdezések alapját. 
+ 
+Alább azt kívánom megmutatni, hogy egy példalekérdezés alapján hogyan szűkítettem le a slizaa \cite{slizaa_2018} nevű Xtext alapú Cypher metamodellt. 
 
-itt lesz ugyanannak a lekérdezésnek a kibontott xmi fájlja.
+\begin{lstlisting}[style=cyphersmall]
+MATCH (train : Train {name : "train1"})-[:ON]->(seg : Segment {name : "seg3"}) 
+RETURN seg
+\end{lstlisting}
 
-itt pedig lépésről lépésre el lesz magyarázva hogy milyen elemekből tevődik össze,
- azok hogyan épülnek fel
-  miben hasonlítanak egymásra, 
-  miért van szükség rájuk.
-  
-itt lehetnek részletek amiket kivettem, indoklással.
+A szűkítést a fenti lekérdezés alapján végeztem a következő metódussal:
+\begin{itemize}
+	\item Felírtam a fenti lekérdezést a query editorban.
+	\item Kibontottam Xtext segítségével.
+	\item Megnyitottam a nyelvtan metamodelljét.
+	\item A konfigurációs fájlban egy metamodell deklarációs mappába összegyűjtöttem a kibontott fában található osztályokat.
+	\item A nyelvtan alapján kiválogattam az osztályok ősosztályait, illetve a használt/használható asszociációkat.
+	\item A nyelvtanban ezen kívül növeltem a muptiplicitását legalább 1-re azoknak az elemeknek amelyek generálása elengedhetetlen az értelmes lekérdezések létrejöttéhez.
+ 	
+\end{itemize}   
+
 
 \subsection{Jólformáltsági kényszerek betartása}
 itt egy összefoglaló pár mondatban, ha esetleg valaki kihagyta volna az előző fejezetet, hogy mit jelent az alcím. pl az alábbi:

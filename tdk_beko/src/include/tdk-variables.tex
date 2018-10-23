@@ -17,6 +17,7 @@
 \definecolor{commentcolor}{rgb}{0,0.3,0.1}
 \definecolor{stringcolor}{rgb}{0,0,1}
 \definecolor{emphColor}{rgb}{0,0.1,0.49}
+\definecolor{idColor}{rgb}{	0.5,0.3,0.1}
 
 \lstdefinelanguage{viatra}
 {morekeywords={@QueryBasedFeature,@Constraint,count,pattern,package,
@@ -55,3 +56,75 @@
 }
 \newcommand{\viatraStyle}[1]{\lstinline[style=viatrabig]@#1@}
 \newcommand{\mm}[1]{{\color{emphColor}\textsf{#1}}}
+
+\lstdefinelanguage{cypher}
+{
+	morekeywords={
+		MATCH, OPTIONAL, WHERE, NOT, AND, OR, XOR, RETURN, DISTINCT, ORDER, BY, ASC, ASCENDING, DESC, DESCENDING, UNWIND, AS, UNION, WITH, ALL, CREATE, DELETE, DETACH, REMOVE, SET, MERGE, SET, SKIP, LIMIT, IN,
+		% some legacy rules
+		INDEX, DROP, UNIQUE, CONSTRAINT, EXPLAIN, PROFILE, START, CASE,
+		% some SQL-only keywords
+		GROUP, HAVING,
+	},
+	emph={Train,Segment,ON},
+	emphstyle={\color{emphColor}},
+	sensitive=true,
+	morecomment=[l]{//},
+	morecomment=[s]{/*}{*/},
+	morestring=[b]{"},
+	numbers=none,
+	stepnumber=1,
+	numbersep=5pt,
+	basicstyle=\small\ttfamily,
+	keywordstyle=\color{keywordcolor}\bfseries\ttfamily,
+	commentstyle=\color{commentcolor}\ttfamily,
+	stringstyle=\color{stringcolor}\ttfamily,
+	identifierstyle=\color{idColor}\ttfamily,
+	showstringspaces=false,
+	columns=flexible,
+	keepspaces=true,
+	breaklines=true,	
+	captionpos=b,
+	tabsize=2
+}
+\lstdefinestyle{cypherbig}{
+	basicstyle=\ttfamily,
+	commentstyle=\color{commentcolor}\ttfamily,
+	stringstyle=\color{stringcolor}\ttfamily,
+	%frameround=tttt,
+	captionpos=b,
+	keywordstyle=\color{keywordcolor}\bfseries\ttfamily,
+	showstringspaces=false,
+	tabsize=2,
+	language=cypher,
+	escapeinside={(*@}{@*)},
+	breaklines=false
+}
+\lstdefinestyle{cyphersmall}{
+	basicstyle=\scriptsize\ttfamily,
+	commentstyle=\color{commentcolor}\ttfamily,
+	stringstyle=\color{stringcolor}\ttfamily,
+	%frameround=tttt,
+	captionpos=b,
+	keywordstyle=\color{keywordcolor}\bfseries\ttfamily,
+	showstringspaces=false,
+	tabsize=2,
+	language=cypher,
+	escapeinside={(*@}{@*)},
+	breaklines=false
+}
+\newcommand{\cypherStyle}[1]{\lstinline[style=cypherbig]@#1@}
+%\newcommand{\mycdots}{\cdot\!\cdot\!\cdot}
+%\lstset{language=cypher,
+%	literate=*
+%	{...}{$\mycdots$}{1}
+%	{theta}{$\theta$}{1}
+%	{<<}{\color{variable}\guillemotleft{}}{1}
+%	{>>}{\textcolor{variable}{\guillemotright{}}\color{black}}{1}
+%	{[[}{\color{relation}$\{\mkern-4.2mu|$}{1}
+%	{]]}{\textcolor{relation}{$|\mkern-4.3mu\}$}\color{black}}{1}
+%	{<p>}{\color{pattern}$(\mkern-4.2mu|$}{1}
+%	{</p>}{\textcolor{pattern}{$|\mkern-4.3mu)$}\color{black}}{1}
+%}
+
+
