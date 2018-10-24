@@ -112,7 +112,7 @@ pattern notWellDeepMap(mapLiteralEnrty : MapLiteralEntry){
 Erre a mintára pedig azért van szükség, mert ha nem lennének akkor a következőhöz hasonló értelmetlen lekérdezések generálása válna lehetővé:
 
 \begin{lstlisting}[style=cyphersmall]
-MaMATCH (seg : Segment {name : {name2 : {name3: { name4 : seg4}}}}) 
+MATCH (seg : Segment {name : {name2 : {name3: { name4 : seg4}}}}) 
 RETURN seg
 \end{lstlisting}
 
@@ -128,13 +128,29 @@ pár mondat
 
 
 \section{Post processing}
-itt egy összefoglaló pár mondatban, ha esetleg valaki kihagyta volna az előző fejezetet, hogy mit jelent az alcím.
+Az előző fejezetben kifejtettem miért jó  a változókat csak utólag elnevezni. Ezt a feladatrészt az utófeldolgozás során végzem el. Itt adom hozzá ezen kívül azokat a részleteket is a modellekhez, ami mindegyikben azonos, ezért a generálás során nem foglalkoztam vele. Ahhoz, hogy értelmesen nevezzem el az egyes változókat, a Train Benchmark metamodelljére építettem, ami látható \aref{fig:trainbenchmarkfig2}. ábrán.
 
-esettanulmány címkehalmaz megadása 
+Három féle elemet kell elneveznünk a jelenleg generált modellekben. (1) csomópont címkék \viatraStyle{NodeLabel.labelName} , (2) kapcsolat címkék \viatraStyle{RelationshipDetail.relTypeNames} és (3) tulajdonság címkék \viatraStyle{MapLiteralEntry.key}.
+Ezek mind megfeleltethetőek az ábrán látható elemeknek. A csomópont címkék az osztályok neveinek, a kapcsolat címék az asszociációk neveinek, míg a tulajdonságcímkék az attribútumoknak. Ezért készítettem három listát a megfelelő nevekkel.
+\begin{enumerate}
+	\item csomópont címkék : Region, Route, Segment, Semaphore, Sensor, Switch, SwitchPosition
+	\item kapcsolat címkék : connectsTo, entry, exit, follows, monitoredBy, monitors,
+	"requires", "target"
+	\item tulajdonság címkék : id, active, position, currentPosition, length, signal
+	
+\end{enumerate}
+Ezután szükségem volt egy randomizáló függvényre, amely a megfelelő nevek valamelyikét elhelyezi egy-egy elemen.
+Majd bekötöttem mindhárom típus minden elemére a megfelelő szavakat.
 
-hogy mondom meg mi hova kerülhet
+Ezen kívül a lekérdezésekben vannak még változók is amelyeket szisztematikusan elneveztem V1...Vn-el, illetve literálok amiket pedig "String1"..."Stringn"-el neveztem el. 
 
-mi alapján tettem azokat ide amiket
+
+
+
+
+
+
+
 
 
 \section{Fordítás}
