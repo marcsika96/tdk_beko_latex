@@ -34,13 +34,13 @@ Jólformálsági kényszerekre azért van szükség, mert nem minden a metamodel
 
 \begin{lstlisting}[style=viatrasmall]
 pattern hasReference(retI : ReturnItem, variRef : Expression){
-VariableRef(variRef);
-ReturnItem.expression(retI, variRef);
+	VariableRef(variRef);
+	ReturnItem.expression(retI, variRef);
 }
 
 @Constraint(severity ="error", key={ri}, message = "error")
 pattern hasNoReference(ri : ReturnItem){
-neg find hasReference(ri, _);
+	neg find hasReference(ri, _);
 }
 \end{lstlisting}
 
@@ -49,76 +49,75 @@ A fenti kényszerre azért volt szükség, mert a metamodellben nem volt megadva
 A felső minta meghatározza hogy hogyan néz ki egy olyan \viatraStyle{ReturnItem} aminek van \viatraStyle{VariableRef} a visszatérési értékében. Az alsó pedig egy kényszer, ami arra kényszeríti a generátort hogy eldobja az összes olyan modellt, amiben nem találja meg a felső mintát.
 
 \begin{lstlisting}[style=viatrasmall]
-pattern wellLookingPattern (^pattern : Pattern, patternElement : PatternElement){
-Pattern.patterns(^pattern,patternElement);
+pattern wellLookingPattern (patt : Pattern, patternElement : PatternElement){
+	Pattern.patterns(patt,patternElement);
 }
-@Constraint pattern notWellLookingPattern(^pattern : Pattern){
-neg find wellLookingPattern(^pattern , _);
+@Constraint 
+pattern notWellLookingPattern(patt : Pattern){
+	neg find wellLookingPattern(patt , _);
 }
 \end{lstlisting}
 
 A fenti kényszerre azért volt szükség, mert a metamodell alapján egy \viatraStyle{Pattern}-be a \viatraStyle{.patterns} tulajdonság beállításakor sok féle elem kerülhetett volna, viszont sok akár a mostaninál bonyolultabb példalekérdezés során sem volt precedens arra, hogy nem \viatraStyle{PatternElement} -ek kerültek bele. Ezért úgy döntöttem, hogy a konzisztensebb és gyorsabb generálás érdekében megtiltom a generátornak, hogy jóként fogadjon el más megoldást.
 
-\begin{lstlisting}[style=viatrasmall]
-pattern wellLookingPatternElement(patternElement : PatternElement, nodePattern : NodePattern){
-PatternElement.nodepattern(patternElement, nodePattern);
-}
-
-@Constraint pattern notWellLookingPatternElement(patternElement : PatternElement){
-neg find wellLookingPatternElement(patternElement, _);
-}
-\end{lstlisting}
-
 
 \begin{lstlisting}[style=viatrasmall]
-@Constraint(severity ="error", key={patternElement}, message = "error")
-pattern  patternElementHasVar(patternElement : PatternElement, variable : VariableDeclaration){
-PatternElement.^var(patternElement,variable);
+@Constraint
+pattern  patternElementHasVar(pE : PatternElement, vari: VariableDeclaration){
+	PatternElement.^var(pE,vari);
 }
 
-@Constraint(severity ="error", key={patternElement}, message = "error")
-pattern  patternElementHasPart(patternElement : PatternElement, part : PatternPart){
-PatternElement.part(patternElement,part);
+@Constraint
+pattern  patternElementHasPart(pE : PatternElement, pp : PatternPart){
+	PatternElement.part(pE,pp);
 }
 \end{lstlisting}
+ A fenti két kényszerre azért volt szükség, mert a \viatraStyle{PatternElement} osztály örököl a \viatraStyle{PatternPart} osztálytól egy \viatraStyle{var} és egy \viatraStyle{part} tulajdonságot, pedig ilyen tulajdonságokkal nem szabadna rendelkeznie, csak ez az információ elveszett a Cypher Xtext nyelvtanának metamodellé generálódása során. Ezért hibásnak nyilvánítom azokat a \viatraStyle{PatternElement}-eket, amelyek rendel a két tulajdonság valamelyikével. 
+
 
 \begin{lstlisting}[style=viatrasmall]
 pattern pe(pe:PatternElement) {
-PatternElement(pe);
+	PatternElement(pe);
 }
 
-@Constraint(severity ="error", key={patternPart}, message = "error")
-pattern notPatternElement( patternPart : PatternPart){
-neg find pe(patternPart);
+@Constraint
+pattern notPatternElement( pp : PatternPart){
+	neg find pe(pp);
 }
 \end{lstlisting}
 
+A munkám során vizsgált példalekérdezések között nem volt olyan \viatraStyle{PatternPart}, ami nem volt \viatraStyle{PatternElement}. Viszont a generátor számára meghatározott metamodellben mindkét osztály szerepel, és egyik sem absztrakt, így a generátor sokat bajlódna \viatraStyle{PatternPart}-ok generálásával, ezzel fontos időt veszítve. Ettől a lehetőségtől a fenti kényszer segítségével megfosztom.     
+
 \begin{lstlisting}[style=viatrasmall]
-@Constraint(severity ="error", key={mapLiteral}, message = "error")
+@Constraint
 pattern notWellLookingMapliteral(mapLiteral : MapLiteral, nodeLabel: NodeLabel){
-MapLiteral.nodeLabels(mapLiteral,nodeLabel);
+	MapLiteral.nodeLabels(mapLiteral,nodeLabel);
 }
 
 \end{lstlisting}
+
+A \viatraStyle{Mapliteral} osztály örököl egy \viatraStyle{nodelabels} tulajdonságot, és ezáltal nyelvtanilag helytelenné válik, mivel a \viatraStyle{Mapliteral}-ok a következőképpen néznek  ki a Cypher nyelven: \cypherStyle{name : "seg3"} és egyéb elemek nem kerülhetnek bele. 
 
 \begin{lstlisting}[style=viatrasmall]
-//ahhoz kell hogy ne ott legyene különböző 2 lekédrezés hogy milyen méllyen cíkmkézett
 pattern wellDeepMap(mapLiteralEnrty: MapLiteralEntry, string : StringLiteral){
-MapLiteralEntry.value(mapLiteralEnrty,string);
+	MapLiteralEntry.value(mapLiteralEnrty,string);
 }
 
-@Constraint(severity ="error", key={mapLiteralEnrty}, message = "error")
+@Constraint
 pattern notWellDeepMap(mapLiteralEnrty : MapLiteralEntry){
-neg find wellDeepMap(mapLiteralEnrty, _);
+	neg find wellDeepMap(mapLiteralEnrty, _);
 }
 \end{lstlisting}
 
+Erre a mintára pedig azért van szükség, mert ha nem lennének akkor a következőhöz hasonló értelmetlen lekérdezések generálása válna lehetővé:
 
-A fenti két kényszer azt biztosítja, hogy a lekérdezésnek, amit generálunk mindenképpen meglegyen a két fő része. A match részben határozzuk meg azt a bizonyos mintát, amit keresünk, a return részben pedig visszatérünk az erre a mintára illeszkedő gráfrészletekkel.
+\begin{lstlisting}[style=cyphersmall]
+MaMATCH (seg : Segment {name : {name2 : {name3: { name4 : seg4}}}}) 
+RETURN seg
+\end{lstlisting}
 
-Ezen belül ki kell kössük szintén, hogy a két fő rész ne csak csonkként vagy helytelenül generálódjon, hanem az egész elengedhetetlen részfa megszülessen.
+És a generátor nagy méretű modelleknél könnyen esne abba a hibába hogy az extra csúcspontokat így pocsékolja el.
 
-Ezért van szükség a return ágon az alábbi kényszerekre:
 
 
 
