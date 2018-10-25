@@ -119,18 +119,60 @@ RETURN seg
 És a generátor nagy méretű modelleknél könnyen esne abba a hibába hogy az extra csúcspontokat így pocsékolja el.
 
 
-
-
 \subsection{Diverzitás biztosítása}
-pár mondat
+A generállt modellszekvencia használhatatlan lenne , ha a lekérdezések között nem , vagy csak lényegtelen különbségek lennének. Dolgozatomban több féle szinten is garantáltam a lekérdezések diverzitását (elkerülve ezzel hogy túlságosan hasonló lekérdezések szülessenek). A diverzitás biztosítása kiemelten fontos tesztgenerálási feladatoknál, mert így hatékony ekvivalencia partícionálást biztosíthatunk. Generálás során az alábbi lényegi különbségeket garantáljuk.
+
+\begin{itemize}
+	\item Egyenértékű változók elnevezésétől függetlenül azonosnak találjuk az alábbi két megoldást, hiszen a válasz a két lekérdezésre azonos értékeket adna vissza.
+\begin{lstlisting}[style=cyphersmall]
+MATCH ( V1 : Segment  )-->( V2 : Segment ) RETURN V1 , V2
+MATCH ( Var1 : Segment  )-->( Var2 : Segment)	RETURN Var1 , Var2
+\end{lstlisting}
+	\item A változók sorrendezésétől függetlenül azonosnak tekintjük az alábbi két problémát, hiszen a két lekérdezés ugyanazt a táblázatot adná vissza csupán az oszlopokat fordított sorrendben jelenítené meg.
+\begin{lstlisting}[style=cyphersmall]
+MATCH ( V1 : Segment  )-->( V2 : Segment ) RETURN V1 , V2
+MATCH ( V1 : Segment  )-->( V2 : Segment ) RETURN V2 , V1
+\end{lstlisting}
+	\item A attribútomok ellenőrzésének sorrendje nem számít, hiszen ugyanannak a csomópontnak attribútumairól van szó, mindegy milyen sorrendben írjuk.
+\begin{lstlisting}[style=cyphersmall]
+MATCH ( Var1 : Segment { signal : "String1", currentPosition : "String2" }) 
+RETURN Var1
+MATCH ( Var1 : Segment { currentPosition : "String2", signal : "String1" })
+RETURN Var1
+\end{lstlisting}
+	\item Illetve a vesszővel elválasztott minta részek sorrendje sem változtat a lekérdezés eredményén, mert ezek metszetét értékeli ki a lekérdező rendszer.  
+\begin{lstlisting}[style=cyphersmall]
+MATCH ( V1 : Segment { signal : "String1"} ) , 
+	  ( V2 : Route { length : "String2" } )
+RETURN V1 ,V2
+MATCH ( V2 : Route { length : "String2" } ) ,
+	  ( V1 : Segment { signal : "String1"} )  
+RETURN V1 ,V2
+\end{lstlisting}
+\end{itemize}
+
+A fenti példák nem tartalmaznak lényegi szűrést, továbbra is az összes lehetséges lekérdezés generálható marad.
+
+Továbbá az alábbi extra diverzitást is biztosítottam a lekérdezések létrehozása során:
+\begin{itemize}
+	\item Két struktúrálisan hasonló lekérdezést nem különböztetünk meg. Struktúrálisan hasonlónak azokat a lekérdezéseket tekintem amelyek a típusnevek átírásával azonossá válnának.
+\begin{lstlisting}[style=cyphersmall]
+MATCH ( V1 : Segment  )-->( V2 : Segment ) RETURN V1 , V2
+MATCH ( V1 : Route  )-->( V2 : Switch ) RETURN V1 , V2
+\end{lstlisting}
+	\item A literál értékeket is hasonlónak tekintjük az előző ponthoz hasonlóan ez is a struktúrális különbségek létrehozásnak érdekében történik. 
+\begin{lstlisting}[style=cyphersmall]
+MATCH ( Var1 : Segment { signal : "String1" }) RETURN Var1
+MATCH ( Var1 : Segment { signal : "String2" }) RETURN Var1
+\end{lstlisting}
+	\item A generátoron belül a diverzitás szintet magasra állítottam. Ez aszerint növeli a különbségeket két gráf között, hogy megvizsgálja a csomópontok szomszédságát ( a csomóponttal szomszédos csomópontok halmaza). És nem generál több, csak azonos szomszédságokból álló gráfot.  
+\end{itemize}
 
 
+\section{Utófeldolgozás}
+Az előző fejezetben kifejtettem miért jó  a változókat csak utólag elnevezni. Ezt a feladatrészt az utófeldolgozás során végzem el. Itt adom hozzá ezen kívül azokat a részleteket is a modellekhez, ami mindegyikben azonos, ezért a generálás során nem foglalkoztam vele. 
 
-
-\section{Post processing}
-Az előző fejezetben kifejtettem miért jó  a változókat csak utólag elnevezni. Ezt a feladatrészt az utófeldolgozás során végzem el. Itt adom hozzá ezen kívül azokat a részleteket is a modellekhez, ami mindegyikben azonos, ezért a generálás során nem foglalkoztam vele. Ahhoz, hogy értelmesen nevezzem el az egyes változókat, a Train Benchmark metamodelljére építettem, ami látható \aref{fig:trainbenchmarkfig2}. ábrán.
-
-Három féle elemet kell elneveznünk a jelenleg generált modellekben. (1) csomópont címkék \viatraStyle{NodeLabel.labelName} , (2) kapcsolat címkék \viatraStyle{RelationshipDetail.relTypeNames} és (3) tulajdonság címkék \viatraStyle{MapLiteralEntry.key}.
+Ahhoz, hogy értelmesen nevezzem el az egyes változókat, a Train Benchmark-ban használt kifejezéseket és értékeket osztom ki, amik láthatóak \aref{fig:trainbenchmarkmetamodell}. ábrán. Három féle elemet kell elneveznünk a jelenleg generált modellekben. (1) csomópont címkék \viatraStyle{NodeLabel.labelName} , (2) kapcsolat címkék \viatraStyle{RelationshipDetail.relTypeNames} és (3) tulajdonság címkék \viatraStyle{MapLiteralEntry.key}.
 Ezek mind megfeleltethetőek az ábrán látható elemeknek. A csomópont címkék az osztályok neveinek, a kapcsolat címék az asszociációk neveinek, míg a tulajdonságcímkék az attribútumoknak. Ezért készítettem három listát a megfelelő nevekkel.
 \begin{enumerate}
 	\item csomópont címkék : Region, Route, Segment, Semaphore, Sensor, Switch, SwitchPosition
@@ -140,35 +182,16 @@ Ezek mind megfeleltethetőek az ábrán látható elemeknek. A csomópont címk�
 	
 \end{enumerate}
 Ezután szükségem volt egy randomizáló függvényre, amely a megfelelő nevek valamelyikét elhelyezi egy-egy elemen.
-Majd bekötöttem mindhárom típus minden elemére a megfelelő szavakat.
+Majd bekötöttem mindhárom típus minden elemére a megfelelő szavakat. Ezen kívül a lekérdezésekben vannak még változók is amelyeket szisztematikusan elneveztem V1...Vn-el, illetve literálok amiket pedig "String1"..."Stringn"-el neveztem el. 
 
-Ezen kívül a lekérdezésekben vannak még változók is amelyeket szisztematikusan elneveztem V1...Vn-el, illetve literálok amiket pedig "String1"..."Stringn"-el neveztem el. 
-
-
-
-
-
-
-
-
-
+Ezzel lehetnek olyan problémák, hogy a lekérdezések értelmetlennek bizonyulnak, például:
+ \begin{lstlisting}[style=cyphersmall]
+ MATCH ( Var1 : Segment { signal : "String1" }) RETURN Var1
+ \end{lstlisting}
+ 
+ Hiszen a Train Benchmark metamodellje alapján egy szegmensnek nincsen singnal tulajdonsága, tehát egy metamodell alapján felépített gráf adatbázisban nem találnánk a lekérdezésben szereplő mintát. A Neo4j gráfadatbázisára viszont igaz, hogy csak enyhén típusos, ezért igazából nem kezel metamodelleket adatbázis szinten, ha akarnánk bele tudnánk írni egy olyan csomópontot, ami Segment címkét kap és signal tulajdonsággal rendelkezik, és a felhasználókat semmi nem akadályozza meg abban, hogy esetleg értelmetlen gráfadatbázist hozzanak létre. így amikor keresünk egy ilyen adatbázisban fel kell hogy legyen készülve ara, hogy olyan dolgot keresünk amit nem találhatunk meg. 
 
 \section{Fordítás}
-itt egy összefoglaló pár mondatban, ha esetleg valaki kihagyta volna az előző fejezetet, hogy mit jelent az alcím.
 
-kód
-
-hogy olvasok be
-
-kód
-
-hogy itarok ki
-
-kód
-
-nyelvtan ami alapján dolgozok
-
-lekérdezés
-
-ilyen a végtermék
+A generált gráfokat az utófeldolgozás után kifejezések  ASG-je ként értelmezem, majd a nyelvtani szabályok fordított irányú alkalmazásával szöveges dokumentummá alakítom. A fordító a szöveggé alakítás során szóközöket rak a szükséges helyekre, behelyettesíti a változók neveit a rájuk mutató referenciákba,  kitölt a nyelvtani szabályokban meghatározott szavakat pl: \cypherStyle{MATCH , RETURN} , illetve megfelelő helyekre  zárójeleket rak. A fordítást az Xtext keretrendszerének segítségével automatizáltam.
 
