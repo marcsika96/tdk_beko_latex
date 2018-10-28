@@ -102,7 +102,7 @@ A három mérés eredményei külön-külön megfeleltethetőek egy lineáris tr
 	\label{fig:BDiversity}
 \end{figure}
 
-Az M1 es környezetben végzett mérések során generált lekérdezések diverzitását is kimértem. Ezt szomszédsági formák segítségével tettem. A mérés eredményei \aref{BDiversity}. ábrán láthatóak. Az ábra vízszintes tengelyén a tesztkészlet mérete látható, míg a függőleges tengelyen a megtalált szomszédságok darabszáma. Az ábrázolt értékek a különböző minimális hozzáadott elemszámok esetén a 10 mérés mediánját mutatják.
+Az M1 es környezetben végzett mérések során generált lekérdezések diverzitását is kimértem. Ezt szomszédsági formák segítségével tettem. A mérés eredményei \aref{fig:BDiversity}. ábrán láthatóak. Az ábra vízszintes tengelyén a tesztkészlet mérete látható, míg a függőleges tengelyen a megtalált szomszédságok darabszáma. Az ábrázolt értékek a különböző minimális hozzáadott elemszámok esetén a 10 mérés mediánját mutatják.
 
 Az ábrán látható, hogy a szomszédságok száma körülbelül lineárisan növekszik az különböző esetekben. A nagyobb lekérdezések esetén azért sokkal több a szomszédság mint a kisebbek esetén, mert ezen az ábrán már a cypher nyelvre lefordított, nevekkel kitöltött lekérdezések szomszédságait ábrázoltam.
 
@@ -112,22 +112,41 @@ Az ábrán látható, hogy a szomszédságok száma körülbelül lineárisan n�
 	\centering
 	\includegraphics[width=1\textwidth]{figures/diversityA}
 	\caption{K3-as mérés diverzitása}
-	\label{fig:ADiversity }
+	\label{fig:ADiversity}
 \end{figure}
 
 Az M2-es környezetben a lekérdezések és nyers kitöltetlen gráfok diverzitását egyaránt kimértem. A mérés eredményei
-\aref{ADiversity}. ábrán láthatóak. Az ábra vízszintes tengelyén a tesztkészlet mérete látható,  a függőleges tengelyen pedig a megtalált szomszédságok darabszáma. Az ábrázolt értékek a 10 elvégzett mérés során kapott értékek mediánjai. 
+\aref{fig:ADiversity}. ábrán láthatóak. Az ábra vízszintes tengelyén a tesztkészlet mérete látható,  a függőleges tengelyen pedig a megtalált szomszédságok darabszáma. Az ábrázolt értékek a 10 elvégzett mérés során kapott értékek mediánjai. 
 
 Az ábrán látható, hogy a kitöltetlen modellek sokkal kisebb diverzitást mutatnak mint a kitöltöttek. Illetve az is látható, hogy a kevés modellnél még lineárissal közelíthető növekedés sok modellnél logaritmikussá alakul. 
 
 \textit{Az általam bevitt diverzitás növelését segítő módszerek tehát hatékonyak,illetve a generálás során a diverzitás folyamatosan növekszik.}
+
+\section{Lekérdezések futásidejének mérése Neo4j adatbázison}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.6\textwidth]{figures/measurementRuntimeResultNeo4J}
+	\caption{Lekérdezéseim futásidejének eredménye}
+	\label{fig:Neo4jRuntime}
+\end{figure}
+
+Az M2es környezetben generált lekérdezéseket egy a Train Benchmark által összeállított adatbázison futtattam, amelyben 2024 csomópont és ezek között 5878 kapcsolat volt. Az első futás alkalmával a legtöbb lekérdezés 0 ms-os eredménnyel nem futott le, ez azért volt, mert a Neo4j az attribútumok alapján indexel, és az általam generált lekérdezések ebből a szempontból nem voltak helyesek, ezért a lekérdezéseket megszűrtem az utófeldolgozás során, és attribútum mentesen is lefuttattam őket az adatbázison. Ennek a mérésnek az eredményei \aref{fig:Neo4jRuntime}. ábrán láthatóak.   
+
+Az ábrán a pontok az egyes modellekhez tartozó futásidőket jelenítik meg. A vízszintes tengelyen a modellek mérete látható, az alapján számolva hogy hány csomópontból áll az ASG-jük, a függőleges tengelyen pedig a hozzájuk tartozó futásidő. A sötétebb pontok azt jelentik, hogy ott sok egyforma érték született, a halványabbaknál kevesebb. A futásidőt 100-ban maximalizáltam, azok a lekérdezések amelynek a futásidejét 100-al jelenítem meg azok 5 másodpercen keresztül nem futottak le, de nem jött rá a rendszer, hogy nem jók. 
+
+Az ábrán látható, hogy a kisebb modellek kisebb, a közepesek közepes, a nagyok pedig nagyon nagy futásidőt mutatnak, az is látható, hogy míg a kisebb modelleknél volt kevés olyan lekérdezés ami nagyon lassan futott le, addig a nagyobbaknál nem volt olyan ami nagyon gyorsan futott volna le. A futásidő és a modell méret között kiszámoltam a korrelációs együttható értékét, 0.85 -öt kaptam. Ez azt jelenti, hogy a modellméret és a futásidő között nagy korreláció van jelen.
+
+ 
+\textit{Következtetésként levonhatjuk, }
+
 
 
 \section{Lehetséges mérési hibák}
 \begin{itemize}
 	\item Egyetlen esettanulmányon futtattam a méréseket, de ez egy reprezentatív, korszerű, aktívan fejlesztett teljesítmény benchmark, amelyet már több más esettanulmányban is alkalmaztak.\cite{} 1 2 3
 	\item Csak pozitív mintájú lekérdezések generálásával foglalkoztam, de mivel ezek adják az összes lekérdezés alapját ezért jó reprezentatív esetnek tartom őket. Illetve a nyelvtan is tőlem függetlenül fejlesztik, és az annak is ezek adják az alapját
-	\item A futásidő és diverzitásban mindent csak 10szer futtattam, de a futásidők és a diverzitások nem mutattak nagy eltéréseket egymástól. Továbbá a mérési zajt medián számítással mértem ki és a bemelegedés hatását a generálások megismétlésével küszüböltem ki a futásidő stabilizálódást megvárva az éles mérések előtt.
+	\item A futásidő és diverzitásban mindent csak 10szer futtattam, de a futásidők és a diverzitások nem mutattak nagy eltéréseket egymástól. Továbbá a mérési zajt medián számítással mértem ki és a bemelegedés hatását a generálások megismétlésével küszöböltem ki a futásidő stabilizálódást megvárva az éles mérések előtt.
 	\item 
 	
 \end{itemize}
