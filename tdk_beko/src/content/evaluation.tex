@@ -12,20 +12,15 @@ Ebben a fejezetben kiértékelem munkámat mialatt megválaszolom a következő 
 \section{Mérési környezet felállítása}
 
 
-A méréseket eclipse fejlesztői környezetben végeztem. Ahhoz, hogy bemelegítsem a modell generátort memóriakezelés és optimalizálás szempontjából 5 extra futást adtam hozzá minden kiértékelt mérés előtt. A mérésekhez a generátor számára 4000 MB memóriát biztosítottam, és ez mindig elegendőnek bizonyult. Az összes mérést egy egyszerű asztali számítógépen végeztem (Intel Core i7-3520M CPU, 2.90GHz, Windows 10 Pro). A generáláshoz részmodellként egy 22 elemből álló ASG-t adtam meg, de csak az esszenciális részletek specifikálásával.  
+A méréseket eclipse fejlesztői környezetben végeztem. Ahhoz, hogy bemelegítsem a modell generátort memóriakezelés és optimalizálás szempontjából 5 extra futást adtam hozzá minden kiértékelt mérés előtt. A mérésekhez a generátor számára 4000 MB memóriát biztosítottam, és ez mindig elegendőnek bizonyult. Az összes mérést egy egyszerű asztali számítógépen végeztem (Intel Core i7-3520M CPU, 2.90GHz, Windows 10 Pro). A generáláshoz részmodellként egy 22 elemből álló ASG-t adtam meg, de csak az esszenciális részletek specifikálásával. Erre az alapra építve két különböző mérési környezetet implementáltam, hogy mind a 4 kérdésre választ tudjak adni. A két környezetben generált gráfokat elkészültük után egy utófeldolgozás fázison mennek keresztül, ahol cypher nyelvű lekérdezésekké fordítom le őket.
 
-\section{K1}
-\subsection{Specifikáció}
-A kérdés megválaszolásához 12 mérést végeztem, 50 példány gráfot generáltam 10 hozzáadott elemmel. A kölünböző futásidőket egy helyre összegyűjtöttem és az adatokat transzformáltam befogadható formátumra.
-\subsection{Eredmények}
-A mérés eredményei  \aref{fig:grafikon}. ábrán láthatóak. Az ábra segítségével azt szeretném bemutatni, hogy a különböző futásidők nagyságrendileg eltérnek egymástól. A grafikon vízszintes tengelyén pedig az ábrázolt négy érték össszegét tekintjük 100 százaléknak.
+\subsection{M1: Kevés al-környezet, sok példány modell}
+A első mérési környezet három al-környezetből áll. A három al-környezet csak a generálás során hozzáadott csomópontok minimális számának meghatározásában különbözik egymástól. A három környezetben rendre legalább 10, 20 illetve 30 csomópontot generáltam a részmodellben megadottak mellé. Mindhárom al-környezetben 12 alkalommal végeztem el a méréseket, és minden mérés során 50 példány modellt generáltam. 
 
-A négy ábrázolt érték pedig rendre: Az utófeldogozás ideje(kék), a fordítás idejének század része (narancs), a generálás idejének tízezrede (szürke), és az előfeldolgozás idejének százmilliomoda (sárga). Tehát ezek szerint a különböző tényezők aránya a következő:
-\begin{itemize}
-	\item utófeldolgozási idő * 10 ~ fordítási idő * 2
-	\item fordítási idő * 3 * 1000 ~ generációs idő
-	\item generációs idő *  1000 ~ előfeldolgozási idő
-\end{itemize}
+\subsection{M2: Sok al-környezet, kevés példány modell} 
+A második mérési környezet 13 al-környezetből áll. Minden al-környezetben 10  alkalommal végeztem el a méréseket, és minden alkalommal 10 példány modellt generáltam. A 13  al-környezetben rendre legalább 5, 10 ,15, ...,50, 100, 150, 200 csomópontot generáltam a részmodellben megadottak mellé.
+
+\section{A futásidő összetétele}
 
 \begin{figure}
 	\centering
@@ -34,52 +29,109 @@ A négy ábrázolt érték pedig rendre: Az utófeldogozás ideje(kék), a ford�
 	\label{fig:grafikon}
 \end{figure}
 
+A futásidő összetételének vizsgálatát az M1 mérési környezetben végeztem el. A mérés eredményei  \aref{fig:grafikon}. ábrán láthatóak. Az ábra segítségével azt szeretném bemutatni, hogy a különböző futásidők nagyságrendileg mekkora részét képezik a futásidő egészének. A három szín három értéket reprezentál: az előfeldolgozás idejét kék színnel, a generálás idejét szürke színnel, az utófeldogozás idejét pedig narancssárga színnel jelöltem. A grafikon vízszintes tengelye a teljes futásidőt mutatja meg. Az első oszlop a 10 a második a 20 a harmadik pedig a 30 hozzáadott csomópontban minimalizált al-környezetben végzett mérések futásidejének összegét ábrázolja. 
 
+Az ábrán látható, hogy míg az elő és az utófeldolgozás összes ideje nem mutat jelentős különbséget a három esetben, addig a generálás időtartama szignifikánsan különbözik. Láthatóan a legkisebb méretnél a leghosszabb és a legnagyobbnál a legrövidebb. Ennek az okát következő szekcióban fejtem ki.
 
-\section{K2}
-\subsection{Specifikáció}
-A kérdés megválaszolásához 3 al mérést végeztem. A három mérés egymástól csak a generált modellek minimális méretében különbözött, az elsőben 10 a másodikban 20 a harmadikban pedig 30 elemet generáltam a részmodellben megadottak mellé. 
-Mindhárom almérést 12 alkalommal végeztem el, és minden alkalommal 50 példányt generáltam. 
+\textit{Végeredményben levonhatom a következtetést, hogy a futásidő leghosszabb részét a generálás ideje teszi ki, míg az előfeldolgozás és az utófeldolgozás arányaiban megegyező időtartamú, kisebb modellek esetében az előfeldolgozás, nagyobbak esetében pedig az utófeldolgozás tart tovább.}   
 
-\subsection{Eredmények}
-A mérés eredményei \aref{fig:AmeresEredmeny}. ábrán láthatóak.
-
-
-\begin{figure}
-	\centering
-	\includegraphics[width=1\textwidth]{figures/AmeresEredmeny}
-	\caption{A K2 mérés eredményei}
-	\label{fig:AmeresEredmeny}
-\end{figure}
-
-Az 50 darab generált modell megtalálásának ideje nem volt azonos a 12 alkalommal, ezértt a 12 érték mediánját kiválasztottam, az ábrán ezen medián értékek táthatóak. A 3 almérés eredményeit 3 színnel jelöltem. Az ábrán a vízszintes tengelyen a modellek láthatóak a megtalálás sorrendjében, a függőleges tengelyen pedig a futásidők mediánja milliszekundumban. 
-
-A  három mérés eredményei külön-külön megfeleltethetőek egy egyenes trendvonalnak. Az egyre későbbi modellek megtalálása a diverzitás biztosítása miatt növekszik, egyre nehezebb ugyanis szignifikánsan különböző modelleket találni.
-
-Az ábrán látható, hogy a generátor nehezebben boldogult a kis modellek megtalálásával  mint a nagyokéval. Ez azzal magyarázható, hogy a megadott részmodell elég nagy,(22 elem) emiatt tovább kell keresgélni, hogy 10 hozzáadott elemből ki tudja tölteni az összes szükséges  helyet és még különböző is legyen. 
-
-
-K3 : B(12x, 1db, 5-10-15-...50), B+(12x, 10, 5-10-15-...50) , B++=(12x, 30, 5-10-15-...50) 
-\section{K3}
-\subsection{Specifikáció} 
-A kérdés megválaszolásához 13 al mérést végeztem. Minden al mérést 10 alkalommal végeztem el, és minden alkalommal 10 példány modellt generáltam. A 13 mérés során rendre 5, 10 ,15, ...,50, 100, 150, 200 elemet adtam hozzá a részmodellhez.
-
-\subsection{Eredmények}
-A mérés eredményei \aref{fig:BmeresEredmeny}. ábrán láthatóak.   
+\section{Skálázódás a modellek méretének függvényében}
 
 \begin{figure}
 	\centering
 	\includegraphics[width=1\textwidth]{figures/statisticsPlottal1}
-	\caption{A K3 mérés eredményei}
+	\caption{A K2 mérés eredményei}
 	\label{fig:BmeresEredmeny}
 \end{figure}
 
-Mind a 13 alkalommal vizsgáltam az 1., az 5. és a 10. modell megtalálásához szükséges időt. Az előző méréshez hasonlóan most is rendre a 12 identikus mérés futásidejének mediánját ábrázoltam. A vízszintes tengelyen a hozzáadott elemek darabszáma, míg a függőleges tengelyen az adott modell megtalálásához szükséges futásidő látható. 
+A második kérdésben felállított problémára az M2-es környezetben kerestem a választ. A mérés eredményei \aref{fig:BmeresEredmeny}. ábrán láthatóak. A következtetéseimet az 1., az 5. és a 10.modell megtalálásának  időpontjából vontam le. A 12 mérés során számolt futásidők mediánját ábrázoltam. A vízszintes tengelyen a hozzáadott csomópontok minimális elemszáma, míg a függőleges tengelyen az adott modell megtalálásához szükséges futásidő látható. 
 
-Itt is látható, hogy a kis darabszámú generált elem hozzáadásával nehezebben boldogult a generátor, mint a közepes elemszámokkal, ám a hatalmas modellek megtalálása is egyre nehezebb feladatnak bizonyult. Ha a 3 görbéhez illeszkedő trendvonalat keresünk és az elejét vagy a végét levágjuk, akkor egy köbös függvényt tudunk illeszteni a szakaszokra. 
-Mit a legtöbb np teljes problémára erre is igaz, hogy a megfelelő egyszerűsítésekkel és megoldásokkal exponenciális helyet köbösre egyszerűsítődik le a probléma.  
+Látható, hogy kis minimum darabszámú generált elem hozzáadásával nehezebben boldogult a generátor, mint a közepes elemszámokkal, ám a hatalmas modellek megtalálása is egyre nehezebb feladatnak bizonyult. A kis modelleknél mért lassúság azzal magyarázható, hogy a megadott részmodell elég nagy,(22 elem) emiatt tovább kell keresgélni, hogy 10 hozzáadott elemből ki tudja-e tölteni az összes szükséges helyet,illetve ha nem tudja akkor növelnie kell a hozzáadott csomópontok számát, és újrapróbálkoznia. 
 
-A három vonal ezen kívül azt is mutatja, hogy az első modellt gyorsabb megtalálni mint az 5-et, és az 5.-et gyorsabb mint a 10.-et. Ez továbbra is a diverzitás fenntartásának nehézségéből fakad.
+A vizsgált alkalmazás nagyobb modelleknél négyzetes karakterisztikát mutat. A gráfgenerálás egy NP-nehéz probléma, így a négyzetes karakterisztika remek eredmény, de tetszőleges méretű lekérdezések elkészítésére nem biztos hogy alkalmas.
 
+\textit{Tehát végeredményben állíthatom, hogy a generátor szépen egyszerűsíti ki a problémát és 200 generált csomópontra még elfogadható futásidővel működik. (Alább egy 200 csomópontból álló kifejezés látható illusztrációként). A lenti lekérdezés benchmarkolásra alkalmas hosszúságú.}
+
+\begin{lstlisting}[style=cyphersmall]
+MATCH ( V1 : Semaphore { signal : "String1" } ) ,
+	( V2 : Semaphore { position : "String2" , length : "String3" } ) ,
+	( V3 : Region { id : "String4" , length : "String5" } ) ,
+	( V4 : Semaphore { length : "String6" , active : "String7" } ) ,
+	( V5 : Route { signal : "String8" , currentPosition : "String9" } )
+	 - [ V6 : requires { length : "String10" , position : "String11" } ] - 
+	( V7 : Region { currentPosition : "String12" , length : "String13" } )
+	 - [ V8 : entry { signal : "String14" , active : "String15" } ] -
+	( V9 : Route { active : "String16" , currentPosition : "String17" } ) ,
+	( V10 : Segment { length : "String18" , signal : "String19" } ) ,
+	( V11 : Semaphore { id : "String20" , active : "String21" } ) ,
+	( V12 : Route { signal : "String22" } ) ,
+	( V13 : Region { position : "String23" , signal : "String24" } ) ,
+	( V14 : Region { currentPosition : "String25" , length : "String26" } ) ,
+	( V15 : Route { currentPosition : "String27" , currentPosition : "String28" }),
+	( V16 : Segment { currentPosition : "String29" , position : "String30" } ) ,
+	( V17 : Switch { length : "String31" , currentPosition : "String32" } ) ,
+	( V18 : Semaphore { id : "String33" , signal : "String34" } )
+RETURN V5 , V10 , V7 , V14 , V18 , V9 , V6 , V16
+\end{lstlisting}
+
+
+
+
+\section{Skálázódás a modellek darabszámának függvényében}
+ 
+\begin{figure}
+	\centering                                                    
+	\includegraphics[width=1\textwidth]{figures/statisticsPlottalA}
+	\caption{A K2 mérés eredményei}
+	\label{fig:AmeresEredmeny}
+\end{figure}
+                                                                                                                                                                                                                                                                                           
+A harmadik kérdésre az M1-es környezetben kerestem a választ. A mérés eredményei \aref{fig:AmeresEredmeny}. ábrán láthatóak. Az 50 darab generált modell megtalálásának ideje nem volt azonos a 12 alkalommal, ezért a 12 érték mediánját kiválasztottam, az ábrán ezeket a medián értékeket jelenítettem meg. A 3 al-környezet mérési eredményeit 3 színnel jelöltem. Az ábrán a függőleges tengelyen a futásidő látható milliszekundumban,  a vízszintes tengelyen pedig a létrejött tesztkészlet mérete.  
+
+A három mérés eredményei külön-külön megfeleltethetőek egy lineáris trendvonalnak, ez azt jelenti, hogy az egyes modellek megtalálása körülbelül ugyanannyi időt vesz idénybe. Ezen az ábrán is látható, hogy a generátor lassabban végzett a kis modellek megtalálásával  mint a nagyokéval. 
+                                                                                                               
+\textit{Mivel közel lineáris egyenesek születtek a mérés eredményeként, levonható a következtetés, hogy az egyes modelleket körülbelül azonos időközönként találja meg a generátor,  tehát a modellek darabszámának függvényében remekül skálázódik a módszer.}
 
 \section{Diverzitás mérése}
+
+
+\begin{figure}
+	\centering
+	\includegraphics[width=1\textwidth]{figures/diversityB}
+	\caption{A K2-es mérés diverzitása}
+	\label{fig:BDiversity}
+\end{figure}
+
+Az M1 es környezetben végzett mérések során generált lekérdezések diverzitását is kimértem. Ezt szomszédsági formák segítségével tettem. A mérés eredményei \aref{BDiversity}. ábrán láthatóak. Az ábra vízszintes tengelyén a tesztkészlet mérete látható, míg a függőleges tengelyen a megtalált szomszédságok darabszáma. Az ábrázolt értékek a különböző minimális hozzáadott elemszámok esetén a 10 mérés mediánját mutatják.
+
+Az ábrán látható, hogy a szomszédságok száma körülbelül lineárisan növekszik az különböző esetekben. A nagyobb lekérdezések esetén azért sokkal több a szomszédság mint a kisebbek esetén, mert ezen az ábrán már a cypher nyelvre lefordított, nevekkel kitöltött lekérdezések szomszédságait ábrázoltam.
+
+\textit{Levonható tehát a következtetés, hogy a diverzitás folyamatosan lineárisan növekszik a lekérdezések tehát szignifikáns különbségeket tartalmaznak}  
+
+\begin{figure}
+	\centering
+	\includegraphics[width=1\textwidth]{figures/diversityA}
+	\caption{K3-as mérés diverzitása}
+	\label{fig:ADiversity }
+\end{figure}
+
+Az M2-es környezetben a lekérdezések és nyers kitöltetlen gráfok diverzitását egyaránt kimértem. A mérés eredményei
+\aref{ADiversity}. ábrán láthatóak. Az ábra vízszintes tengelyén a tesztkészlet mérete látható,  a függőleges tengelyen pedig a megtalált szomszédságok darabszáma. Az ábrázolt értékek a 10 elvégzett mérés során kapott értékek mediánjai. 
+
+Az ábrán látható, hogy a kitöltetlen modellek sokkal kisebb diverzitást mutatnak mint a kitöltöttek. Illetve az is látható, hogy a kevés modellnél még lineárissal közelíthető növekedés sok modellnél logaritmikussá alakul. 
+
+\textit{Az általam bevitt diverzitás növelését segítő módszerek tehát hatékonyak,illetve a generálás során a diverzitás folyamatosan növekszik.}
+
+
+\section{Lehetséges mérési hibák}
+\begin{itemize}
+	\item Egyetlen esettanulmányon futtattam a méréseket, de ez egy reprezentatív, korszerű, aktívan fejlesztett teljesítmény benchmark, amelyet már több más esettanulmányban is alkalmaztak.\cite{} 1 2 3
+	\item Csak pozitív mintájú lekérdezések generálásával foglalkoztam, de mivel ezek adják az összes lekérdezés alapját ezért jó reprezentatív esetnek tartom őket. Illetve a nyelvtan is tőlem függetlenül fejlesztik, és az annak is ezek adják az alapját
+	\item A futásidő és diverzitásban mindent csak 10szer futtattam, de a futásidők és a diverzitások nem mutattak nagy eltéréseket egymástól. Továbbá a mérési zajt medián számítással mértem ki és a bemelegedés hatását a generálások megismétlésével küszüböltem ki a futásidő stabilizálódást megvárva az éles mérések előtt.
+	\item 
+	
+\end{itemize}
+
+
+
+
