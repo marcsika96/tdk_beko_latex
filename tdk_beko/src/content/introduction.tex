@@ -2,28 +2,25 @@
 \chapter{\bevezetes}
 %----------------------------------------------------------------------------
 
-Napjainkban az adatokat többféle formátumban is tárolják. Ezek közé tartoznak a gráfadatbázisok, ahol  csomópontok reprezentálják az entitásokat és az élek az entitások közötti kapcsolatokat. Az adatstruktúrához illeszkedve többféle gráflekérdező nyelv jött létre, amelyek képesek komplex struktúrák felírására.
 
-A gráfmintaillesztő rendszerek tesztelése azonban komoly kihívást jelent, főképp automatizált megoldásokban nem bővelkedünk. A legnagyobb kihívást ebben az esetben a változatos modellek és lekérdezések automatikus és szisztematikus előállítása jelenti, melyek tesztbemenetként szolgálnak. Továbbá, gráfadatbázisok teljesítménymérését is nagyban segítené  az automatikusan előállított modellkészlet.
-
-Dolgozatom célja hogy ezekre a problémákra megoldást találjak. Kutatásom során   megmutatom, hogy egy automatikusan előállított diverz modell halmazzal, amelynek modelljei lekérdezésként értelmezhetőek egy gráfmintaillesztő rendszerben (pl.: VIATRA vagy Neo4j), hogyan lehetséges  az adott gráfmintaillesztő rendszer tesztelése.
-
-Munkám során fejlett logikai következtetők alkalmazásával állítok elő modelleket, melyek diverzitását szomszédsági formákkal (neighborhood shape-ek) biztosítom. A logikai következtetők eredményeit lekérdezésekként, és adatbázisok tartalmaként egyaránt értelmezhetjük, amelyek eredményei különböző megvalósításokkal összehasonlíthatóvá válnak. A megoldásomat egy esettanulmány keretében prezentálom.
-
-Ezzel a módszerrel lehetővé válik, nagyobb megbízhatóságú gráfmintaillesztő rendszerek fejlesztése olcsóbban. Illetve egy ekkora modell halmaz különböző gráfmintaillesztő rendszerekben lekérdezésekre fordítva és a válaszidőket lemérve teljesítménymérésekre is használható.
+\section{Kontextus.}
+Napjainkban az adatokat tárolására egyre több alkalmazási területen alkalmaznak gráfadatbázisokat. Gráfadatbázisokban (a klasszikus relációs adatbázisok tábláitól eltérően) csomópontok reprezentálják az entitásokat és explicit élek az entitások közötti kapcsolatokat. Az adatstruktúrához illeszkedve többféle gráflekérdező nyelv jött létre, amelyek képesek komplex struktúrák felírására. Az egyik legelterjedtebb lekérdezőnyelv a Cypher \cite{Cypher}, amelyhez több implementáció is készült, például a Neo4j \cite{neo4j} és a tanszékünkön fejlesztett InGraph \cite{marton2017model}.
 
 
+\section{Problémafelvetés}
+A gráf adatbázisok tesztelése azonban komoly kihívást jelent, főképp automatizált megoldásokban nem bővelkedünk. Bár számos megközelítés próbál teszteseteket hatékonyan kiválasztani \cite{myint2018test}, végrehajtani \cite{yan2018snowtrail}, gráfadatbázis lekérdezések automatikus generálására jelenleg még nincs módszer. Az jelenleg elérhető megközelítések vagy emberek által készült lekérdezések alapján készülnek \cite{yan2018snowtrail}, vagy mutációkkal próbálnak lekérdezéseket előállítani meglévőkből \cite{tuya2006sqlmutation} (amelyek struktúrálisan hasonlítani fognak az eredetihez, ezét gyenge tesztfedettséget biztosítanak). A probléma megoldásához legközelebb álló eredmény \cite{DBLP:conf} is csupán az SQL relációs adatbázisok szűk résznyelvére specializált módszer, amely rosszul skálázódó \cite{viatrasolver} , gyenge diverzitást garantáló \cite{semerath2018iterative} generátoron alapszik.
 
 
-\textbf{Kontextus.} Napjainkban ....
+\section{Célkitűzés}
+Dolgozatom célja, hogy előállítsak egy keretrendszert, amelynek segítségével automatikusan állíthatóak elő  Cypher \cite{Cypher} nyelvnek megfelelő lekérdezések. A lekérdezéseket megfelelő  méretben és mennyiségben állítanám elő ahhoz, hogy közvetlenül alkalmazhatóak legyenek Cypher nyelvű gráfadatbázisok tesztelésére és teljesítmény mérésére.  
 
-\textbf{Problémafelvetés.} Azonban ...
+\section{Kontribúció}
+Dolgozatomban bemutatok egy olyan generálási folyamatot, ahol közvetlenül a Cypher nyelvtannak egy slizaa \cite{slizaa_2018} nyelvtanából indulok ki, és Neo4j által  közvetlenül feldolgozható nyelvtanilag helyes lekérdezéseket állítok elő. Meghatározom a lekérdezések struktúrális szimmetriáit, így azonosítva a logikailag hasonló eseteteket. A folyamathoz egy olyan korszerű gráfgenerátort használok, amely így garantálja az előállított készlet diverzitását és jólformáltságát. A megoldásomat a Train Benchmark \cite{szarnyas2018train} esettanulmány segítségével szemléltetem, a folyamat skálázódását és diverzitását mérésekkel igazolom.
 
-\textbf{Célkitűzés.} Dolgozatom célja ...
 
-\textbf{Kontribúció.} Dolgozatomban bemutatok ...
+\section{Hozzáadott érték}
+Ezzel a módszerrel lehetővé válik nagyobb megbízhatóságú gráfmintaillesztő rendszerek fejlesztése olcsóbban. Továbbá a külöbnöző implementációk (Neo4j és InGrapg) közötti szemantikus eltérések felfedezhetővé válnak. Illetve egy ekkora lekérdezés halmaz különböző teljesítmény anomáliák detektálására is alkalmazható. 
 
-\textbf{Hozzáadott érték.} Ezáltal ...
-
-\textbf{Dolgozat felépítése.}A második fejezetben bemutatom a dolgozat megértéséhez szükséges háttérismereteket. blabla ...
+\section{Dolgozat felépítése}
+\Aref{chp:2}.~fejezetben bemutatom a dolgozat megértéséhez szükséges háttérismereteket. \Aref{chp:3}.~fejezetben áttekintem a probléma által feltárt lehetőségeket. \Aref{chp:4}.~fejezetben kifejtem, hogy milyen feladatokat oldottam meg/végeztem el a keretrendszer felépítése során. \Aref{chp:5}.~fejezetben mérésekkel támasztom alá munkám minőségét. \Aref{chp:6}.~fejezetben összegyűjtöttem a megoldásommal összefüggő munkákat és összehasonlítottam őket a sajátommal. \Aref{chp:7}.~fejezetben pedig összefoglalom az általam elért eredményeket.
 

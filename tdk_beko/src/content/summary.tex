@@ -1,4 +1,5 @@
 \chapter{Összefoglaló és jövőbeli munkák}
+\label{chp:7}
 
 A dolgozatomban sikerrel megvalósítottam egy többlépéses gráflekérdezés generálási folyamatot, amely képes volt Neo4j adatbázis által beolvasható és feldolgozható lekérdezéseket előállítására. A generátor paraméterezhető a vizsgálni kívánt adatbázis tartalmával (címkekészlet), valamint a lekérdezések mennyiségével és bonyolultságával.
 Ezen felül biztosítja lekérdezések diverzitását, így minden kiadott lekérdezés különbözik a többitől.
@@ -6,7 +7,7 @@ Az általam készített keretrendszert teljesítmény és diverzitás szempontj�
 Továbbá kiemelendő, hogy dolgozatomban számos technológiát alkalmaztam:
  \begin{itemize}
  	\item Gráfadatbázisok területén: Cypher gráfadatbázisnyelv, Neo4j adatbázis, Train Benchmark esettanulmány.
- 	\item Modellezés területén: EMF modellező keretrendszer, Xtext technológia lekérdezések beolvasáshoz és sorosításhoz (konkrétan a slizaa nyelvtant használva), \textsc{Viatra} gráfmintaillesztő rendszer jólformáltsági kényszerek meghatározására, és Xtend-et modellek utófeldolgozására.
+ 	\item Modellezés területén: Eclipse Modeling Framework modellező keretrendszer, Xtext technológia lekérdezések beolvasáshoz és sorosításhoz (konkrétan a slizaa nyelvtant használva), \textsc{Viatra} gráfmintaillesztő rendszer jólformáltsági kényszerek meghatározására, és Xtend-et modellek utófeldolgozására.
  	\item Matematikai eszközök:\textsc{Viatra} Solver gráfgeneráláshoz, illetve a prototipizáláshoz Alloy gráfgenerátor Sat4j mögöttes SAT megoldóval (amely skálázódási okok miatt nem volt alkalmas komolyabb mérések elvégzéséhez).
  	Elméleti eredményként elmondható, hogy sikerrel alkalmaztam egy fejlett gráfgenerálási algoritmust
  \end{itemize}
@@ -16,4 +17,4 @@ Elméleti eredményként elmondható, hogy Cypher nyelv slizaa nyelvtanának nye
 Sikerként mondható el, hogy már sikerült is találni szemantikus eltérést a tanszékemen fejlesztett InGraph 
 \cite{MartonSB17} és a referenciaimplementáció Neo4j rendszerekben. Ezen kívül felkerestük a Neo4j fejlesztőit is, akiknek felkeltette az érdeklődését a fejlesztett eszköz.
 
-Jövőbeli munkaként az általam készített lekérdezés generátor kiegészíthető lehet gráfadatbázis-tartalmak előállításával is. Az így előálló rendszer akár egy komplett környezetet biztosíthatna gráfadatbázisok tesztelésére és teljesítménymérésére, előállítva a teljes bemenetet.
+Jövőbeli munkaként az általam készített lekérdezés generátor kiegészíthető lehet olyan komplex gráfadatbázis-tartalmak előállításával, mellyel az így előálló rendszer akár egy komplett környezetet biztosíthatna gráfadatbázisok tesztelésére és teljesítménymérésére, előállítva a teljes bemenetet.

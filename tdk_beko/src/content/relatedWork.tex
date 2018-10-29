@@ -1,37 +1,38 @@
 \chapter{Kapcsolódó munkák}
+\label{chp:6}
 
 Az alábbiakban összefoglalom, a munkámhoz kapcsolódó szakirodalmat. A modellgenerálás fejezet ennek \cite{semerath2018iterative} a cikknek a felépítését követi.  
 
 \section{Modell és gráfgenerálás}
 
-A diverz modell generálás kulcsfontosságú szerepet játszik modell transzformációk, kód generátorok és komplett fejlesztőrendszerek tesztelése során. A mutáció alapú megközelítések \cite{aranega2015towards}, \cite{darabos2008towards},  létező modelleken hajtanak végre véletlenszerű változtatásokat mutációs szabályok alkalmazásával. Más automatizált technikák  \cite{brottier2006metamodel}, \cite{ehrig2009generating}, olyan modelleket generálnak amelyek csak a metamodellhez alkalmazkodnak. Míg ez  az utóbbi megoldás jól skálázódik nagyobb modellekre a mutációs módszerrel generált  modelleknél nincs arra  garancia hogy jólformáltak lesznek.
+A diverz modell generálás kulcsfontosságú szerepet játszik modell transzformációk, kód generátorok és komplett fejlesztőrendszerek tesztelése során. A mutáció alapú megközelítések \cite{aranega2015towards}, \cite{darabos2008towards}  létező modelleken hajtanak végre véletlenszerű változtatásokat mutációs szabályok alkalmazásával. Más automatizált technikák  \cite{brottier2006metamodel}, \cite{ehrig2009generating}, olyan modelleket generálnak, amelyek csak a metamodellhez alkalmazkodnak. Míg ez  az utóbbi megoldás jól skálázódik nagyobb modellekre, addig a mutációs módszerrel generált modelleknél nincs arra  garancia, hogy jólformáltak lesznek.
 
-A modellgeneráló technikák egy nagyobb halmaza bizonyos ígéreteket ad a teszt hatékonyságára. Az ilyen white-box alapú megközelítések \cite{aranega2015towards}, \cite{bordbar2005uml2alloy}, implementáción és transzformáción alapulnak, és általában back-end logikai megoldókat használnak, amelyek nem jól skálázhatóak gráfmodellekre.
+A modellgeneráló technikák egy nagyobb halmaza bizonyos ígéreteket ad a teszt hatékonyságára. Az ilyen white-box alapú megközelítések \cite{aranega2015towards}, \cite{bordbar2005uml2alloy} implementáción és transzformáción alapulnak, és általában back-end logikai megoldókat használnak, amelyek nem jól skálázhatóak gráfmodellekre.
 
-A black-box megközelítések \cite{buttner2012verification}, \cite{fleurey2007towards}, csak a specifikációját használják fel a nyelvnek, vagy a transzformációnak, így alapvetően  kényszereken illetve részmodelleken alapulnak. Ezekben a megközelítésekben közös, hogy néha egyszerű modelleket generálnak, amelyeknek   növelhető ugyan diverzitása szimmertia-törő predikátumokkal, de nagyobb modellekre nem skálázódnak. Sőt,  a modellek effektív diverzitása is megkérdőjelezhető, mert a jelenlegi modell- transzformációkat tesztelő módszerekben sokkal enyhébb vizsgálatoknak kell csak megfelelni, mint a különböző szoftverek tesztelése során.
+A black-box megközelítések \cite{buttner2012verification}, \cite{fleurey2007towards}, csak a specifikációját használják fel a nyelvnek, vagy a transzformációnak, így alapvetően  kényszereken, illetve részmodelleken alapulnak. Ezekben a megközelítésekben közös, hogy néha egyszerű modelleket generálnak, amelyeknek   növelhető ugyan diverzitása szimmertia-törő predikátumokkal, de nagyobb modellekre nem skálázódnak. Sőt,  a modellek effektív diverzitása is megkérdőjelezhető, mert a jelenlegi modell- transzformációkat tesztelő módszerekben sokkal enyhébb vizsgálatoknak kell csak megfelelni, mint a különböző szoftverek tesztelése során.
 
 \section{Adatbázis tesztelés}
 
-Az adatbázisok tesztelése nehéz, aktívan kutatott feladat, több hasonló megközelítés is található a szakirodalomban.
+Az adatbázisok tesztelése egy nehéz, aktívan kutatott feladat, amelynek több hasonló megközelítése is megtalálható a szakirodalomban.
 
 
-A miénkhez leghasonlóbb megközelítés a \cite{DBLP:conf} cikkben leírt ADUSA keretrendszer, ami szintén SAT alapú megoldókkal dolgozik, ők Alloy-t \cite{Alloy:Language} , \cite{alloy:kodkod} használnak. Az ő módszerük a miénkkel ellentétben SQL specifikus és nyelv alapján úgy tűnik hogy csak fix méretű modellek generálására alkalmas. A \textsc{Viatra} Solver is támoatja az Alloy-t mint mögöttes megoldót cypher lekérdezések generálására viszon azt tapasztaltam, hogy nem skálázódik eléggé. Másrészt a korábbi tapasztalataink alapján \cite{semerath2018iterative} gyenge minőségű tesztkészletet állít elő diverzitás szempontjából.
+Az enyémhez leghasonlóbb megközelítés a \cite{DBLP:conf} cikkben leírt ADUSA keretrendszer, ami szintén SAT alapú megoldókkal dolgozik, ők Alloy-t \cite{Alloy:Language} , \cite{alloy:kodkod} használnak. Az ő módszerük az enyémmel ellentétben SQL specifikus és nyelv alapján úgy tűnik hogy csak fix méretű modellek generálására alkalmas. A \textsc{Viatra} Solver is támogatja az Alloy-t mint mögöttes megoldót Cypher lekérdezések generálására viszont azt tapasztaltam, hogy nem skálázódik megfelelően. Másrészt korábbi tapasztalatok alapján \cite{semerath2018iterative} gyenge minőségű tesztkészletet állít elő diverzitás szempontjából.
 
 
-Az \cite{myint2018test} cikk páronkénti fedettség tesztelési módszert javasol adatbázisok tesztelésére. Ez azt jelenti, hogy első lépésben részekre bont egy lekérdezést, majd a másodikban minden részletre felsorol lehetséges részkifejezéseket, majd ezekből a részkifejezésekből készít helyes lekérdezéseket úgy, hogy minden lehetséges részlet pár legalább egyszer szerepeljen. (Anélkül, hogy explicit az összes kombinációt elő kelljen állítani.) Ehhez képest a mi megközelítésünk során nem szükséges explicit felsorolni lekérdezés részleteket, hanem ezeket automatikusan állítjuk elő. Továbbá az általun biztosított fedettség hasonló a  páronkénti fedettséghez, hiszen a generálás során az összes különböző szomszédságú gráfcsomópont felfedezését biztosítjuk.
+Az \cite{myint2018test} cikk a páronkénti fedettség (pairwise testing) tesztelési módszert javasolja adatbázisok tesztelésére. Ez azt jelenti, hogy első lépésben részekre bont egy lekérdezést, majd a másodikban minden részletre felsorol lehetséges részkifejezéseket, majd ezekből a részkifejezésekből készít helyes lekérdezéseket úgy, hogy minden lehetséges részletpár legalább egyszer szerepeljen. (Anélkül, hogy explicit az összes kombinációt elő kelljen állítani.) Ehhez képest a megközelítésem során nem szükséges explicit felsorolni lekérdezés részleteket, hanem ezeket automatikusan állítom elő. Továbbá az általam biztosított fedettség hasonló a  páronkénti fedettséghez, hiszen a generálás során az összes különböző szomszédságú gráfcsomópont felfedezését biztosítjuk.
 	 
- Az \cite{yan2018snowtrail} cikkben egy felhő alapú adatbázisban végeznek regressziós tesztelést, a miénkhez hasonló felépítés segítségével, csak itt a teszt lekérdezések halmazát a felhasználók által korábban írt és futtatott lekérdezésekből válogatják össze így próbálva biztosítani a diverzitást. Ezzel szemben mi automatikusan generálunk lekérdezéseket, ami ezáltal remekül egészíti ki ezt a megközelítést olyan esetben amikor a lekérdezések nem hozzáférhetőek. 
+ Az \cite{yan2018snowtrail} cikkben egy felhő alapú adatbázisban végeznek regressziós tesztelést, az enyémhez hasonló felépítés segítségével, csak itt a teszt lekérdezések halmazát a felhasználók által korábban írt és futtatott lekérdezésekből válogatják össze így próbálva biztosítani a diverzitást. Ezzel szemben én automatikusan generálok lekérdezéseket, ami ezáltal remekül egészíti ki ezt a megközelítést olyan esetben, amikor a lekérdezések nem hozzáférhetőek. 
 
 A \cite{tuya2006sqlmutation} cikkben alkalmazott módszer során relációs adatbázisok teszteléséhez generálnak SQL lekérdezéseket mutációs módszerrel. Ennek a megközelítésnek több hátránya is van amit az én megközelítésem kiküszöböl. Egyrészt szükség van egy nagyobb meglévő tesztkészletre, másrészt a mutánsok hasonlítanak az eredeti teszt készletre ezért rossz minőségű tesztkészletet alkotnak diverzitás szempontjából. 
 
-A \cite{SuarezCabal} cikkben SQL specifikus struktúrális metrikákat javasolnak a nagyobb tesztfedettség eléréséhez. Mi is ehhez hasonlóakat használunk általánosan.
+A \cite{SuarezCabal} cikkben SQL specifikus struktúrális metrikákat javasolnak a nagyobb tesztfedettség eléréséhez. Én is ehhez hasonlóakat használok általánosan.
 
-A \cite{DBLP} cikkben a módszerünkkel ellentétben white-box alapú adatbázis tesztelési módszert javasolnak, mégpedig úgy, hogy a lekérdezéseket végrehajtható forráskóddá alakítják és így teszt orákulumot képeznek.
+A \cite{DBLP} cikkben a módszeremmel ellentétben white-box alapú adatbázis tesztelési módszert javasolnak, mégpedig úgy, hogy a lekérdezéseket végrehajtható forráskóddá alakítják és így tesztorákulumot képeznek.
 
 
 
 \section{Adatbázis benchmarkolás}
-Sok adatbázis Benchmark létezik, egy válogatást a \cite{szarnyas2018train} cikkből emeltem ki az alábbi táblázatba. A táblázat alsó sorában az látható, hogy a benchmarkolásra hány lekérdezést használtak fel. Ezzel szemben munkám során én megközelítőleg 3000 lekérdezést generáltam. Az eddigi benchmarkoklási technikák hiányosságnak a lekérdezések mennyisége tűnik.  Ezáltal a megközelítésem alkalmazásával forradalmasítani lehetne az adatbázisok teljesítmény tesztelését. 
+Sok adatbázis benchmark létezik, egy válogatást a \cite{szarnyas2018train} cikkből emeltem ki az alábbi táblázatba. A táblázat alsó sorában az látható, hogy a benchmarkolásra hány lekérdezést használtak fel. Ezzel szemben munkám során én megközelítőleg 3000 lekérdezést generáltam. Az eddigi benchmarkoklási technikák fő hiányosságának a lekérdezések mennyisége tűnik.  Ezáltal a megközelítésem alkalmazásával forradalmasítani lehetne az adatbázisok teljesítmény tesztelését. 
 
 \begin{center}
 	\begin{tabular}{ c | c | c | c | c | c | c }
@@ -40,5 +41,5 @@ Sok adatbázis Benchmark létezik, egy válogatást a \cite{szarnyas2018train} c
 	\end{tabular}
 \end{center}
 
-
-Tudomásom szerint nincs olyan adatbázis benchmark ami szintetikus lekérdezéseket futtatna.
+\noindent
+Tudomásom szerint nincs olyan adatbázis benchmark ami szintetikus lekérdezéseket futtat.

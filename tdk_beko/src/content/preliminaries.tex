@@ -1,7 +1,8 @@
 \chapter{\eloismeretek}
+\label{chp:2}
 
 \section{Esettanulmány}
-A dolgozatban elért eredményeket a Train Benchmark \cite{szarnyas2018train} esettanulmány segítségével fogom bemutatni. Ez a benchmark azért jött létre, hogy össze tudjuk hasonlítani különböző gráflekérdező rendszerek teljesítményét, beleértve gráfadatbázisokat, mint Neo4j \cite{neo4j},  SparkSee \cite{sparksee}, nagy teljesítményű modellezőeszközöket, mint VIATRA \cite{viatra} és szokványos relációs adatbázisokat, mint az Oracle \cite{oracle}, főleg időigény és memória felhasználás szempontjából. A Train Benchmark egy vasúti modellezőeszköz esettanulmányán mutat be olyan, különböző terhelésprofilokat, amelyek hasonlítanak egy valódi modellezési feladathoz. Munkám során a benchmarkban specifikált formátumhoz illeszkedve generáltam lekérdezéseimet, ezért bemutatom, hogy milyen elemekből áll. 
+A dolgozatban elért eredményeket a Train Benchmark \cite{szarnyas2018train} esettanulmány segítségével fogom bemutatni. Ez a benchmark azért jött létre, hogy össze tudjuk hasonlítani különböző gráflekérdező rendszerek teljesítményét, beleértve olyan gráfadatbázisokat, mint a Neo4j \cite{neo4j}, a SparkSee \cite{sparksee}, vagy olyan nagy teljesítményű modellezőeszközöket, mint a VIATRA \cite{viatra} valamint szokványos relációs adatbázisokat, mint például az Oracle \cite{oracle}, főleg időigény és memória felhasználás szempontjából. A Train Benchmark egy vasúti modellezőeszköz által motivált szintetikus esettanulmány alapján mutat be olyan terhelésprofilokat, amelyek hasonlítanak egy valódi modellezési feladat során tapasztaltakhoz. Munkám során a benchmarkban specifikált formátumhoz illeszkedve generáltam lekérdezéseimet, ezért bemutatom, hogy milyen elemekből áll. 
 
 \begin{figure}
 	\centering
@@ -11,7 +12,7 @@ A dolgozatban elért eredményeket a Train Benchmark \cite{szarnyas2018train} es
 \end{figure}
 
 \Aref{fig:trainbenchmark}-es ábrán látható egy a Train Benchmark modelljére alapuló részlet.
-Ebben a kontextusban egy vasúti útvonal(\textit{Route}, zölddel és sárgával jelölve) nem más mint szegmensek(\textit{Segment}, két fekete vonal közötti rész) és váltók (\textit{Switch}, fehér téglalappal jelölve) sorozata, illetve a belépést és a kilépést egy-egy szemafor(\textit{Semaphore}, a két színű lámpácskák jelölik) jelzi. Ahhoz, hogy biztonságos legyen a közlekedés szükség van szenzorokra, amelyek monitorozzák a különböző szegmensek és váltók kihasználtságát. Egy útvonal definiálásához, a felsorolt elemeken kívül a váltók adott útvonalhoz tartozó pozícióját is el kell tárolnunk. Egy útvonal akkor aktív, ha a rendszerben a specifikációjának megfelelően állnak a váltók.
+Ebben a kontextusban egy vasúti útvonal(\textit{Route}, zölddel és sárgával jelölve) nem más mint szegmensek(\textit{Segment}, két fekete vonal közötti rész) és váltók (\textit{Switch}, fehér téglalappal jelölve) sorozata, továbbá a belépést és a kilépést egy-egy szemafor(\textit{Semaphore}, a két színű lámpácskák jelölik) szabályozza. Ahhoz, hogy biztonságos legyen a közlekedés szükség van szenzorokra, amelyek monitorozzák a különböző szegmensek és váltók kihasználtságát. Egy útvonal definiálásához, a felsorolt elemeken kívül a váltók adott útvonalhoz tartozó pozícióját is el kell tárolnunk. Egy útvonal akkor aktív, ha a rendszerben a specifikációjának megfelelően állnak a váltók.
 
 
 
@@ -28,7 +29,7 @@ A gráfok intuitív formalizációt nyújtanak modellezési szempontból arra, h
 	\label{fig:tulajdonsággráfpélda}
 \end{figure}
 
-Ahhoz hogy jobban megérthessük mi is ez az adatmodell \aref{fig:tulajdonsággráfpélda} -es ábrán látható egy példa. Az ábrán minden ami valamilyen forma egy-egy csomópont, és minden csomópont reprezentál elemeket a Train Benchmark adatmodelljéből. A fehér téglalapok a szegmenseket,  a sárga körök a vonatokat, a lila rombuszok az útvonalakat, és a fehér zászlók a váltókat. Minden elem fel van címkézve ezen kívül egy névvel (\cypherStyle{seg1, seg2, tr1} stb...), a formájuk és a nevük is tulajdonságok amelyek segítségével megkülönböztethetővé válnak,és amelyek egy egyszerű gráfban már nem lehetnének jelen. Az élek pedig kapcsolatokat mutatnak az egyes elemek között. Például az ábrán vannak összekötött vonatok és szegmensek, az összekötő élen "ON" felirattal. A vonattól mutatnak a szegmens irányába. Egy ilyen irányított él azt reprezentálja, hogy az adott vonat rajta van az adott szegmensen (angolul : train is \cypherStyle{ON} segment). Ilyen formán az élekhez is rendelhetőek tulajdonságok. 
+Ahhoz hogy jobban megérthessük mi is ez az adatmodell \aref{fig:tulajdonsággráfpélda} -es ábrán látható egy példa. Az ábrán minden ami valamilyen forma egy-egy csomópont, és minden csomópont reprezentál egy-egy elemet a Train Benchmark adatmodelljéből. A fehér téglalapok a szegmenseket,  a sárga körök a vonatokat, a lila rombuszok az útvonalakat, és a fehér zászlók a váltókat. Minden elem fel van címkézve ezen kívül egy névvel (\cypherStyle{seg1, seg2, tr1} stb...), a formájuk és a nevük is tulajdonságok amelyek segítségével megkülönböztethetővé válnak,és amelyek egy egyszerű gráfban már nem lehetnének jelen. Az élek pedig kapcsolatokat mutatnak az egyes elemek között. Például az ábrán vannak összekötött vonatok és szegmensek, az összekötő élen "ON" felirattal. A vonattól mutatnak a szegmens irányába. Egy ilyen irányított él azt reprezentálja, hogy az adott vonat rajta van az adott szegmensen (angolul : train is \cypherStyle{ON} segment). Ilyen formán az élekhez is rendelhetőek tulajdonságok. 
 
 
  
@@ -43,18 +44,18 @@ MATCH (tr:Train)-[:ON]->(seg:Segment)
 RETURN tr, seg	
 \end{lstlisting}   
 
-A fenti példán egy olyan lekérdezést láthatunk,  ami az összes olyan vonat, szegmens párral tér vissza, ahol az adott vonat rajta van az adott szegmensen.  Dolgozatomban Cypher nyelvű lekérdezések generálásával foglalkozom.
+A fenti példán egy olyan lekérdezést láthatunk,  ami az összes olyan vonat, szegmens párral tér vissza, ahol az adott vonat rajta van az adott szegmensen. Dolgozatomban ehhez hasonló Cypher nyelvű lekérdezések generálásával foglalkozom.
 
 Egy Cypher nyelvű lekérdezésben a \cypherStyle{MATCH} kikötést arra használjuk hogy megkeresse a mintát amit leírunk benne.
-A \cypherStyle{RETURN} kikötés meghatározza hogy mi kerüljön bele a visszatérési értékbe. \cypherStyle{()} zárójelek között változókat definiálunk és meghatározhatjuk a címéjüket is például \cypherStyle{(tr:Train)} a \cypherStyle{tr} a változó neve, ami \cypherStyle{Train} típusú. {} zárójelek között ezután további tulajdonságokat köthetünk ki. \cypherStyle{-->} jelöli a kapcsolatot két változó között, ahol a két kötőjel között \cypherStyle{[]} zárójelekben megadható a kapcsolatra vonatkozó címke. 
+A \cypherStyle{RETURN} kikötés utáni szakasz meghatározza, hogy mi kerüljön bele a visszatérési értékbe.    A változókat \cypherStyle{()} zárójelek között definiáljuk és meghatározhatjuk a címéjüket is például \cypherStyle{(tr:Train)}, ahol a \cypherStyle{tr} a változó neve, ami \cypherStyle{Train} típusú.  A további tulajdonságokat \cypherStyle{\{\}} zárójelek között köthetjük ki. A kapcsolatot két változó között \cypherStyle{-->} jelöli, ahol a két kötőjel között \cypherStyle{[]} zárójelekben megadható a kapcsolatra vonatkozó címke is. 
 
-A Neo4j képes arra hogy egy ilyen lekérdezést beolvasson, és kiértékeljen majd visszatérjen a lekérdezésre adott válaszokkal. Azonban, mint minden szoftver a lekérdező rendszerek is tartalmaznak hibákat,amelyek következtében hibás kimeneteket adnak a lekérdezések eredményeként. Ezért a lekérdező rendszerek tesztelése kiemelten fontos.
+A Neo4j képes arra hogy egy ilyen lekérdezést beolvasson és kiértékeljen, majd visszatérjen a lekérdezésre adott válaszokkal. Azonban, mint minden szoftver, a lekérdező rendszerek is tartalmaznak hibákat, amelyek következtében hibás kimeneteket adnak a lekérdezések eredményeként. Ezért a lekérdező rendszerek tesztelése kiemelten fontos.
 
 \section{Modellezés és metamodellezés}
 
 A metamodellezés egy tecknika arra, hogy definiáljunk új modellező nyelveket. A Train Benchmark metamodellje \aref{fig:trainbenchmarkmetamodell} -es ábrán látható.
 
-A céldomén legfontosabb fogalmait és kapcsolatait foglalja össze a metamodell, így specifikálva a modellek alap struktúráját \cite{semerath2017formal}. Dolgozatomban az Eclipse Modeling Framework (EMF) \cite{EMF} -öt használtam metamodellezésre. EMF esetén a fogalmakat osztályokkal (EClass) a kapcsolatokat referenciákkal és attribútumokkal (EReference és EAttribute) írjuk le.
+A célszakterület legfontosabb fogalmait és kapcsolatait foglalja össze a metamodell, így specifikálva a modellek alap struktúráját \cite{semerath2017formal}. Dolgozatomban az Eclipse Modeling Framework (EMF) \cite{EMF} -öt használtam metamodellezésre. EMF esetén a fogalmakat osztályokkal (EClass), a kapcsolatokat referenciákkal és attribútumokkal (EReference és EAttribute) írjuk le.
 
 \begin{figure}
 	\centering
@@ -66,15 +67,14 @@ A céldomén legfontosabb fogalmait és kapcsolatait foglalja össze a metamodel
 \subsection{Cypher query-k metamodellje}
 
 \Aref{fig:cyphermetamodell} -ös ábrán látható a korábban említett Cypher nyelv egyszerűsített metamodellje.
-A \viatraStyle{SinglePartQuery} elem reprezentálja a modell gyökerét. Egy ilyen elem két részből áll : Egy \viatraStyle{Match} 
-és egy \viatraStyle{Return} elemből. A \viatraStyle{Match} elem minták összességéből áll (\viatraStyle{Pattern}), amelyek 
-részekre (\viatraStyle{PatternPart}) bonthatóak. Egy ilyen részben pedig vagy tartalmaz változó deklarációt,
-vagy egy belső részt, ami tartalmaz változó deklarációt. (\viatraStyle{VariableDeclaration}).
+A \viatraStyle{SinglePartQuery} elem reprezentálja a modell gyökerét. Egy ilyen elem két részből áll: egy \viatraStyle{Match} 
+és egy \viatraStyle{Return} elemből. A \viatraStyle{Match} elem minták (\viatraStyle{Pattern}) összességéből áll, amelyek 
+részekre (\viatraStyle{PatternPart}) bonthatóak. Egy ilyen rész vagy közvetlenül tartalmazhat változó deklarációt (\viatraStyle{VariableDeclaration}), vagy pedig egy belső részen keresztül.
 Ezáltal az összes változót a \viatraStyle{Match} elemen belül deklaráljuk. A \viatraStyle{Return} elem  pedig egy
 kifejezést (\viatraStyle{Expression}) tartalmaz, amelyben mindenképp szerepel egy változó referencia
  (\viatraStyle{VariableRef}) is, így összekötve egymással a \viatraStyle{Match} és a \viatraStyle{Return} elemet. 
 
-\begin{figure}
+\begin{figure}[htp]
 	\centering
 	\includegraphics[width=1\textwidth]{figures/openCypherClassDiagram}
 	\caption{Cypher metamodell}
@@ -84,21 +84,18 @@ kifejezést (\viatraStyle{Expression}) tartalmaz, amelyben mindenképp szerepel 
 
 \subsection{Xtext}
 
-Az Xtext keretrendszer programozási nyelvek,  domain-specifikus nyelvek és szöveges editorok fejlesztésére készül. Az Xtext  
+Az Xtext keretrendszer programozási nyelvek,  domain-specifikus nyelvek és szöveges editorok fejlesztésére készült. Az Xtext  
 egy erős nyelvtani szabályokkal rendelkező nyelvet használ az egyedi nyelvtanok definiálására. Ezáltal
-egyszerre biztosít parseolót, linkelőt, helyesírásellenőrzőt szövegkiemelést, hibaüzeneteket és  írás során könnyen kiegészíthető fordítókkal, kódgenerátorokkal és egyéb modellezőeszközökkel. És a nyelvtervező mérnök határozhatja meg a nyelvének célformátumát is. Ahhoz, hogy a Cypher nyelven megírt lekérdezéseket értelmezni lehessen 
-\aref{fig:cyphermetamodell}-ös metamodellen megismert elemek szintjén egy Xtext \cite{xText} keretrendszerben íródott nyelvtanra van szükség, amelyből a metamodell automatikusan elkészült . A dolgozatomban a slizaa \cite{slizaa_2018} nevű Xtext alapú Cypher nyelvtant használtam.
+egyszerre biztosít parseolót, linkelőt, helyesírásellenőrzőt szövegkiemelést, hibaüzeneteket és az írás során könnyen kiegészíthető fordítókkal, kódgenerátorokkal és egyéb modellezőeszközökkel. És a nyelvtervező mérnök határozhatja meg a nyelvének célformátumát is. Ahhoz, hogy a Cypher nyelven megírt lekérdezéseket értelmezni lehessen 
+\aref{fig:cyphermetamodell}-ös metamodellen megismert elemek szintjén egy Xtext \cite{xText} keretrendszerben íródott nyelvtanra van szükség, amelyből a metamodell automatikusan elkészült . A dolgozatomban a slizaa \cite{slizaa_2018} nevű Xtext alapú Cypher nyelvtant használom.
 
 
 \begin{lstlisting}[style=cyphersmall]
-SinglePartQuery:
-(readingClauses+=ReadingClause)* return=Return ;
+SinglePartQuery: (readingClauses+=ReadingClause)* return=Return;
 
-Return:
-(return='RETURN' distinct?='DISTINCT'? body=ReturnBody);
+Return: (return='RETURN' distinct?='DISTINCT'? body=ReturnBody);
 
-ReadingClause:
-LoadCSV | Start | Match | Unwind | InQueryCall;
+ReadingClause: LoadCSV | Start | Match | Unwind | InQueryCall;
 \end{lstlisting}
 
 
@@ -114,9 +111,9 @@ MATCH (tr:Train)-[:ON]->(seg:Segment)
 RETURN tr, seg	
 \end{lstlisting} 
 
-Ezt a lekérdezést Xtext segítségével egy úgynevezett absztrakt szintaxis gráfra (ASG) lehet bontani. Egy ASG egy olyan gráf, amelyben a csomópontok nyelvtani szbaályokkal vannak címkézve az éleket pedig a részszabályok és aszabályok egymásra hivatkozásai adják. Xtext segítségével ezek az ASG-k objaktum gráfként reprezentálhatóak így programozottan könnyen hozzáférhetőekké válnak. A \aref{fig:Xtexttelkibontotthelloworld}.  ábrán egy slizaa nyelvtannal készült ASG-t láthatunk.
+Ezt a lekérdezést Xtext segítségével egy úgynevezett absztrakt szintaxis gráfra (ASG) lehet bontani. Egy ASG egy olyan gráf, amelyben a csomópontok nyelvtani szabályokkal vannak címkézve az éleket pedig a részszabályok és a szabályok egymásra hivatkozásai adják. Xtext segítségével ezek az ASG-k objektum gráfként reprezentálhatóak így programozottan könnyen hozzáférhetőekké válnak. A \aref{fig:Xtexttelkibontotthelloworld}.  ábrán egy slizaa nyelvtannal készült ASG-t láthatunk.
 
-\begin{figure}
+\begin{figure}[htp]
 	\centering
 	\includegraphics[width=0.5\textwidth]{figures/Xtextelkibontotthellowolrd}
 	\caption{A példalekérdezés kibontása Xtext-tel}
@@ -136,7 +133,7 @@ pattern hasMatch (q : SinglePartQuery, m: Match){
 }
 \end{lstlisting}  
 
- Az alábbi kényszer pedig ellenpéldát keres a fenti mintára, amikor a \viatraStyle{Match} nincs kitöltve. A \viatraStyle{@Constraint} sor azt jelenti, hogy ha az alatta levő mintára példát találunk akkor azt a modellt ott helyben dobhatjuk félre. a \viatraStyle{neg find} kifejezés pedig azt jelenti hogy a mögötte meghatározott minta ellentéteit keressük.
+ Az alábbi kényszer pedig ellenpéldát keres a fenti mintára, amikor a \viatraStyle{Match} nincs kitöltve. A \viatraStyle{@Constraint} sor azt jelenti, hogy ha az alatta levő mintára példát találunk akkor azt a modellt ott helyben dobhatjuk félre. A \viatraStyle{neg find} kifejezés pedig azt jelenti hogy a mögötte meghatározott minta ellentéteit keressük.
 
 \begin{lstlisting}[style=viatrasmall]
 @Constraint(severity = "error", key ={q}, message ="error")
@@ -149,15 +146,21 @@ pattern hasNoMatch(q : SinglePartQuery) {
  
 
 \section{Gráfgenerálás}
-Munkám alapját mégis leginkább gráfok generálása képezi. A gráfgenerálás célja, hogy egy adott feladatra szintetizáljon gráfokat  A \textsc{Viatra} Solver \cite{viatrasolver} egy korszerű nyílt forráskódú szoftver keretrendszer amely képes diverz szakterület-specifikus gráf modellek automatikus szintézisére, melyek teszt készletként használhatóak gráf alapú modellező eszközök szisztematikus tesztelése során. Bemenetként a megoldó 
+Munkám alapját mégis leginkább gráfok generálása képezi. A gráfgenerálás célja, hogy egy adott feladatra szintetizáljon gráfokat  A \textsc{Viatra} Solver \cite{viatrasolver} egy korszerű nyílt forráskódú szoftver keretrendszer amely képes diverz szakterület-specifikus gráf modellek automatikus szintézisére, melyek teszt készletként használhatóak gráf alapú modellező eszközök szisztematikus tesztelése során. A megoldó az alábbi bementeket használja fel: 
 \begin{itemize}
-	\item a tesztelni kívánt modellező eszköz specifikációját használja fel metamodell formátumban az Eclipse Modeling Framework-öt használva
+	\item a tesztelni kívánt modellező eszköz specifikációját metamodell formátumban az Eclipse Modeling Framework-öt használva
 	\item jólformáltsági kényszerek egy halmazát a  \textsc{VIATRA} keretrendszer használatával
 	\item opcionálisan egy példánymodell részletet
 \end{itemize}
 
  Kimenetként pedig diverz gráfok egy halmazát generálja. Minden kimeneti gráf megfelel a metamodell specifikációinak és kielégíti az összes jólformáltsági kényszert. Struktúrájukban pedig különböznek egymástől biztosítva ezzel tesztkészlet diverzitását. Én ezt a keretrendszert használom.
+ 
+\section{Szomszédsági formák}
 
+A szomszédsági formák célja, hogy gráfalapú modelleket összehasonlítva eldöntse, két gráf hasonlít-e vagy nem. Ezáltal könnyen meghatározható egy tesztkészletben elvárt különbség a modellek között.
+A szomszédsági forma a gráfokat csomópontjainak környezete alapján hasonlítja össze egy adott távolságban: amennyiben a megadott távolságon belüli részgráfok izomorfak, a két csomópont hasonlónak tekinthető. Két gráf így akkor lesz eltérő, ha van olyan csomópontjuk, amilyen környezetű a másikban nem fordul elő.
+
+A szomszédság alapú diverzitás definíciója a \cite{semerath2018iterative} megtalálható, ami továbbá bemutatja a diverzitás alkalmazhatóságát tesztelési környezetben is.
 
 
 
