@@ -3,33 +3,36 @@
 
 \subsection{Tesztelni kívánt résznyelv kiválasztása}
 
-A gráfgenerátor egyik bemenete a tesztelni kívánt nyelvi fregmens metamodellje. Ahhoz, hogy hasznos tesztesetek állítsunk elő, szükséges a generátort egy konkrét feladatot ellátó modellek előállítására konfigurálni. (Ha az egész nyelvet használnánk akkor a lekérdezése érdektelen részletekből állna, például kommenteket, felesleges változó átnevezéseket, lekérdezéssel kapcsolatos metainformációkat generálna.) Munkám során tehát az első feladat az volt, hogy kiválasszam a Cyphernek egy olyan résznyelvét amellyel érdekes lekérdezéseket lehet generálni. Dolgozatomban olyan úgynevezett pozitív mintájú lekérdezések generálására koncentráltam, amelyek vizsgálják a csomópontok típusát illetve a csomópontok közötti kapcsolatok típusát. Ugyanis számos lekérdező nyelvben, mint például Cypher\cite{Cypher} és \textsc{VIATRA} \cite{viatra} ezek képezik a lekérdezések alapját. 
- 
-Alább azt kívánom megmutatni, hogy egy példalekérdezés alapján hogyan szűkítettem le a slizaa \cite{slizaa_2018} nevű Xtext alapú Cypher metamodellt. 
+A gráfgenerátor egyik bemenete a tesztelni kívánt nyelvi fregmens metamodellje. Ahhoz, hogy hasznos tesztesetek állítsunk elő, szükséges a generátort egy konkrét feladatot ellátó modellek előállítására konfigurálni. (Ha az egész nyelvet használnánk akkor a lekérdezése érdektelen részletekből állna, például kommenteket, felesleges változó átnevezéseket, lekérdezéssel kapcsolatos metainformációkat generálna.) Munkám során tehát az első feladat az volt, hogy kiválasszam a Cyphernek egy olyan releváns résznyelvét amellyel érdekes lekérdezéseket lehet generálni. Dolgozatomban olyan úgynevezett pozitív mintájú lekérdezések generálására koncentráltam, amelyek vizsgálják a csomópontok illetve a csomópontok közötti kapcsolatok típusát és attribútumait. Ugyanis számos lekérdező nyelvben, mint például Cypher \cite{Cypher} és \textsc{VIATRA} \cite{viatra} ezek képezik a lekérdezések alapját. 
 
-\begin{lstlisting}[style=cyphersmall]
-MATCH (train : Train {name : "train1"})-[:ON]->(seg : Segment {name : "seg3"}) 
-RETURN seg
-\end{lstlisting}
+%Dolgozatomban az alábbihoz hasonló lekérdezések generálásával foglalkoztam 
+%
+%\begin{lstlisting}[style=cyphersmall]
+%MATCH (train : Train {name : "train1"})-[:ON]->(seg : Segment {name : "seg3"}) 
+%RETURN seg
+%\end{lstlisting}
 
-A szűkítést a fenti lekérdezés alapján végeztem a következő metódussal:
-\begin{itemize}
-	\item Felírtam a fenti lekérdezést a query editorban.
-	\item Kibontottam Xtext segítségével.
-	\item Megnyitottam a nyelvtan metamodelljét.
-	\item A konfigurációs fájlban egy metamodell deklarációs mappába összegyűjtöttem a kibontott fában található osztályokat.
-	\item A nyelvtan alapján kiválogattam az osztályok ősosztályait, illetve a használt/használható asszociációkat.
-	\item A nyelvtanban ezen kívül növeltem a muptiplicitását legalább 1-re azoknak az elemeknek amelyek generálása elengedhetetlen az értelmes lekérdezések létrejöttéhez.
- 	
-\end{itemize}   
+
+Alább azt kívánom megmutatni, hogy milyen módszerrel lehet le szűkíteni egy Xtext alapú Cypher metamodellt. 
+
+\begin{enumerate}
+	\item  Példa lekérdezések kiválasztása, amelyekhez hasonló tesztkészletet szeretnénk generálni.
+	\item  Példákból ASG-k készítése.
+	\item  ASG-kból legnagyobb közös részgráf előállítása: ez fogja  alkotni a kiindulási részmodellt.
+	\item  ASG-kben használt összes nyelvi konstrukció (típusok, referenciák, literálok) összegyűjtése: ez adja az effektív metamodellt.
+\end{enumerate}   
 
 
 \subsection{Jólformáltsági kényszerek betartása}
-A gráfgenerátor másik bemenete olyan kényszerek halmaza, amelyek szükségesek ahhoz, hogy értelmes modelleket tudjunk generálni. Ezekre főleg azért van szükség, mert az Xtext-ben \cite{xText} íródott nyelvtan és a nyelvtan metamodellje közötti konverzió nem tökéletes. Ennek több oka is van: (1) A precíz metamodell meghatározása számításilag komoly kihívást jelent és nem is végezték el a keretrendszer megalkotói, (2) A metamodellnek hibás modellek leírására is alkalmasnak kell lennie (hiszen szerkesztés közben általában félkész modellek vannak a rendszerben) (3) A metamodell a modelleknek csak atz alap struktúráját (referencia hova mutathat) írja le bonyolultabb szabályok (összetett logikai kifejezések) meghatározására alkalmatlan.
+A gráfgenerátor másik bemenete olyan kényszerek halmaza, amelyek szükségesek ahhoz, hogy értelmes modelleket tudjunk generálni. Ezekre főleg azért van szükség, mert az Xtext-ben \cite{xText} íródott nyelvtan és a nyelvtan metamodellje közötti konverzió nem tökéletes. Jólformálsági kényszerekre azért van szükség, mert nem minden a metamodellel leírható modell sorosítható Cypher nyelvű lekérdezéssé. Ennek több oka is van: (1) A precíz metamodell meghatározása számításilag komoly kihívást jelent és nem is végezték el a keretrendszer megalkotói, (2) A metamodellnek hibás modellek leírására is alkalmasnak kell lennie (hiszen szerkesztés közben általában félkész modellek vannak a rendszerben) (3) A metamodell a modelleknek csak az alap struktúráját (referencia hova mutathat) írja le bonyolultabb szabályok (összetett logikai kifejezések) meghatározására alkalmatlan.
+ Az Xtext Cypher nyelvtanban leírt parseolhatósági szabályokat át kell fordítani ASG-n értelmezett struktúrális kényszerekké. 
 
-Jólformálsági kényszerekre azért van szükség, mert nem minden a metamodellel leírható modell sorosítható Cypher nyelvű lekérdezéssé. Az Xtext Cypher nyelvtanban leírt parseolhatósági szabályokat át kell fordítani ASG-n értelmezett struktúrális kényszerekké. 
 
 
+
+A felső minta meghatározza, hogy hogyan néz ki egy olyan \viatraStyle{ReturnItem} aminek van \viatraStyle{VariableRef} a visszatérési értékében. Az alsó pedig egy kényszer, aminek felírásával garantálom, hogy csak olyan eredmény áll elő, ahol a minta ez teljesül.
+
+A lenti kényszer azt határozza meg, hogy a lekérdezésekben a \cypherStyle{RETURN} szó után kötelező legalább egy változóra referálni.
 
 
 \begin{lstlisting}[style=viatrasmall]
@@ -43,10 +46,7 @@ pattern hasNoReference(ri : ReturnItem){
 	neg find hasReference(ri, _);
 }
 \end{lstlisting}
-
-A fenti kényszerre azért volt szükség, mert a metamodellben nem volt megadva, hogy a \cypherStyle{RETURN} szó után kötelező legalább egy változóra referálni is. Pedig ha nem referálnánk itt változót a \cypherStyle{MATCH} ágon megfogalmazott mintából, akkor nem lenne értelme a minta megírásának, illetve a válasznak sem.
-
-A felső minta meghatározza hogy hogyan néz ki egy olyan \viatraStyle{ReturnItem} aminek van \viatraStyle{VariableRef} a visszatérési értékében. Az alsó pedig egy kényszer, ami arra kényszeríti a generátort hogy eldobja az összes olyan modellt, amiben nem találja meg a felső mintát.
+Minden \viatraStyle{Pattern}-nek kell hogy legyen legalább egy \viatraStyle{PatternElement}-je. Ezt a lenti kényszerben fogalmazom meg. A kényszerre a konzisztensebb és gyorsabb generálás érdekében azért volt szükség. (Egy \viatraStyle{Pattern}-be a \viatraStyle{.patterns} tulajdonság beállításakor a metamodell alapján más elem  is kerülhetne, de a példalekérdezések között egyéb elemre nem volt példa.) 
 
 \begin{lstlisting}[style=viatrasmall]
 pattern wellLookingPattern (patt : Pattern, patternElement : PatternElement){
@@ -58,8 +58,8 @@ pattern notWellLookingPattern(patt : Pattern){
 }
 \end{lstlisting}
 
-A fenti kényszerre azért volt szükség, mert a metamodell alapján egy \viatraStyle{Pattern}-be a \viatraStyle{.patterns} tulajdonság beállításakor sok féle elem kerülhetett volna, viszont sok akár a mostaninál bonyolultabb példalekérdezés során sem volt precedens arra, hogy nem \viatraStyle{PatternElement} -ek kerültek bele. Ezért úgy döntöttem, hogy a konzisztensebb és gyorsabb generálás érdekében megtiltom a generátornak, hogy jóként fogadjon el más megoldást.
 
+A lenti két kényszer megtiltja, hogy egy \viatraStyle{PatternElement} rendelkezzen \viatraStyle{var} és  \viatraStyle{part} tulajdonságokkal. Ilyen tulajdonsága csak a \viatraStyle{PatternPart} osztálynak lehetnek, de a nyelvtan metamodellje alapján helytelenül a \viatraStyle{PatternElement} osztály is megörökli őket. 
 
 \begin{lstlisting}[style=viatrasmall]
 @Constraint
@@ -72,8 +72,8 @@ pattern  patternElementHasPart(pE : PatternElement, pp : PatternPart){
 	PatternElement.part(pE,pp);
 }
 \end{lstlisting}
- A fenti két kényszerre azért volt szükség, mert a \viatraStyle{PatternElement} osztály örököl a \viatraStyle{PatternPart} osztálytól egy \viatraStyle{var} és egy \viatraStyle{part} tulajdonságot, pedig ilyen tulajdonságokkal nem szabadna rendelkeznie, csak ez az információ elveszett a Cypher Xtext nyelvtanának metamodellé generálódása során. Ezért hibásnak nyilvánítom azokat a \viatraStyle{PatternElement}-eket, amelyek rendel a két tulajdonság valamelyikével. 
 
+Az alábbi kényszerben megfogalmazom, hogy ne legyen \viatraStyle{PatternPart} a generált csomópontok között, hanem mindig \viatraStyle{PatternElement}-ek jöjjenek létre. Erre azért volt szükség, mert a metamodellben mindkét osztály szerepel, és egyik sem absztrakt. A kényszer által jelentősen csökken a generátor futásideje.
 
 \begin{lstlisting}[style=viatrasmall]
 pattern pe(pe:PatternElement) {
@@ -81,12 +81,13 @@ pattern pe(pe:PatternElement) {
 }
 
 @Constraint
-pattern notPatternElement( pp : PatternPart){
+pattern notPatternElement(pp : PatternPart){
 	neg find pe(pp);
 }
 \end{lstlisting}
 
-A munkám során vizsgált példalekérdezések között nem volt olyan \viatraStyle{PatternPart}, ami nem volt \viatraStyle{PatternElement}. Viszont a generátor számára meghatározott metamodellben mindkét osztály szerepel, és egyik sem absztrakt, így a generátor sokat bajlódna \viatraStyle{PatternPart}-ok generálásával, ezzel fontos időt veszítve. Ettől a lehetőségtől a fenti kényszer segítségével megfosztom.     
+
+A \viatraStyle{Mapliteral}-ok a következőképpen néznek  ki a Cypher nyelven: \cypherStyle{ name : "seg3"}, egyéb elemek nem kerülhetnek bele. A \viatraStyle{Mapliteral} osztály ennek ellenére helytelenül örököl egy \viatraStyle{nodelabels} tulajdonságot is. A lenti kényszer biztosítja hogy ne töltse ki azt.
 
 \begin{lstlisting}[style=viatrasmall]
 @Constraint
@@ -96,7 +97,8 @@ pattern notWellLookingMapliteral(mapLiteral : MapLiteral, nodeLabel: NodeLabel){
 
 \end{lstlisting}
 
-A \viatraStyle{Mapliteral} osztály örököl egy \viatraStyle{nodelabels} tulajdonságot, és ezáltal nyelvtanilag helytelenné válik, mivel a \viatraStyle{Mapliteral}-ok a következőképpen néznek  ki a Cypher nyelven: \cypherStyle{name : "seg3"} és egyéb elemek nem kerülhetnek bele. 
+Erre a mintára pedig azért van szükség, mert ha nem lennének akkor a következőhöz hasonló értelmetlen lekérdezések generálása válna lehetővé és a generátor nagy méretű modelleknél könnyen esne abba a hibába hogy az extra csúcspontokat így pocsékolja el.
+
 
 \begin{lstlisting}[style=viatrasmall]
 pattern wellDeepMap(mapLiteralEnrty: MapLiteralEntry, string : StringLiteral){
@@ -109,18 +111,17 @@ pattern notWellDeepMap(mapLiteralEnrty : MapLiteralEntry){
 }
 \end{lstlisting}
 
-Erre a mintára pedig azért van szükség, mert ha nem lennének akkor a következőhöz hasonló értelmetlen lekérdezések generálása válna lehetővé:
+
 
 \begin{lstlisting}[style=cyphersmall]
 MATCH (seg : Segment {name : {name2 : {name3: { name4 : seg4}}}}) 
 RETURN seg
 \end{lstlisting}
 
-És a generátor nagy méretű modelleknél könnyen esne abba a hibába hogy az extra csúcspontokat így pocsékolja el.
 
 
 \subsection{Diverzitás biztosítása}
-A generállt modellszekvencia használhatatlan lenne , ha a lekérdezések között nem , vagy csak lényegtelen különbségek lennének. Dolgozatomban több féle szinten is garantáltam a lekérdezések diverzitását (elkerülve ezzel hogy túlságosan hasonló lekérdezések szülessenek). A diverzitás biztosítása kiemelten fontos tesztgenerálási feladatoknál, mert így hatékony ekvivalencia partícionálást biztosíthatunk. Generálás során az alábbi lényegi különbségeket garantáljuk.
+A generált modellszekvencia használhatatlan lenne, ha a lekérdezések között nem, vagy csak lényegtelen különbségek lennének. Dolgozatomban több féle szinten is garantáltam a lekérdezések diverzitását (elkerülve ezzel hogy túlságosan hasonló lekérdezések szülessenek). A diverzitás biztosítása kiemelten fontos tesztgenerálási feladatoknál, mert így hatékony ekvivalencia partícionálást biztosíthatunk. Generálás során az alábbi lényegi különbségeket garantáljuk.
 
 \begin{itemize}
 	\item Egyenértékű változók elnevezésétől függetlenül azonosnak találjuk az alábbi két megoldást, hiszen a válasz a két lekérdezésre azonos értékeket adna vissza.
@@ -170,27 +171,26 @@ MATCH ( Var1 : Segment { signal : "String2" }) RETURN Var1
 
 
 \section{Utófeldolgozás}
-Az előző fejezetben kifejtettem miért jó  a változókat csak utólag elnevezni. Ezt a feladatrészt az utófeldolgozás során végzem el. Itt adom hozzá ezen kívül azokat a részleteket is a modellekhez, ami mindegyikben azonos, ezért a generálás során nem foglalkoztam vele. 
+Az előző fejezetben megoldottam a modellek lényegi részeinek generálását, amely biztosította hogy a modellek lényegi különbségekkel rendelkezzenek. Ezt a feladatrészt az utófeldolgozás során végzem el. Itt adom hozzá ezen kívül azokat a részleteket is a modellekhez, ami mindegyikben azonos, ezért a generálás során nem foglalkoztam vele. 
 
 Ahhoz, hogy értelmesen nevezzem el az egyes változókat, a Train Benchmark-ban használt kifejezéseket és értékeket osztom ki, amik láthatóak \aref{fig:trainbenchmarkmetamodell}. ábrán. Három féle elemet kell elneveznünk a jelenleg generált modellekben. (1) csomópont címkék \viatraStyle{NodeLabel.labelName} , (2) kapcsolat címkék \viatraStyle{RelationshipDetail.relTypeNames} és (3) tulajdonság címkék \viatraStyle{MapLiteralEntry.key}.
-Ezek mind megfeleltethetőek az ábrán látható elemeknek. A csomópont címkék az osztályok neveinek, a kapcsolat címék az asszociációk neveinek, míg a tulajdonságcímkék az attribútumoknak. Ezért készítettem három listát a megfelelő nevekkel.
+Ezek mind megfeleltethetőek \aref{fig:trainbenchmarkmetamodell}. ábrán látható elemeknek. A csomópont címkék az osztályok neveinek, a kapcsolat címék az asszociációk neveinek, míg a tulajdonságcímkék az attribútumoknak. Ezért készítettem három listát a megfelelő nevekkel.
 \begin{enumerate}
-	\item csomópont címkék : Region, Route, Segment, Semaphore, Sensor, Switch, SwitchPosition
-	\item kapcsolat címkék : connectsTo, entry, exit, follows, monitoredBy, monitors, requires, target
-	\item tulajdonság címkék : id, active, position, currentPosition, length, signal
+	\item csomópont címkék : \cypherStyle{Region}, \cypherStyle{Route}, \cypherStyle{Segment}, \cypherStyle{Semaphore}, \cypherStyle{Sensor}, \cypherStyle{Switch}, \cypherStyle{SwitchPosition}
+	\item kapcsolat címkék : \cypherStyle{connectsTo}, \cypherStyle{entry}, \cypherStyle{exit}, \cypherStyle{follows}, \cypherStyle{monitoredBy}, \cypherStyle{monitors}, \cypherStyle{requires}, \cypherStyle{target}
+	\item tulajdonság címkék : \cypherStyle{id}, \cypherStyle{active}, \cypherStyle{position}, \cypherStyle{currentPosition}, \cypherStyle{length}, \cypherStyle{signal}
 	
 \end{enumerate}
 Ezután szükségem volt egy randomizáló függvényre, amely a megfelelő nevek valamelyikét elhelyezi egy-egy elemen.
-Majd bekötöttem mindhárom típus minden elemére a megfelelő szavakat. Ezen kívül a lekérdezésekben vannak még változók is amelyeket szisztematikusan elneveztem V1...Vn-el, illetve literálok amiket pedig "String1"..."Stringn"-el neveztem el. 
+Majd bekötöttem mindhárom típus minden elemére a megfelelő szavakat. Ezen kívül a lekérdezésekben vannak változók is amelyeket szisztematikusan elneveztem \cypherStyle{V1...Vn}-el, illetve literálok amiket pedig \cypherStyle{"String1"..."Stringn"}-el neveztem el. 
 
-Ezzel lehetnek olyan problémák, hogy a lekérdezések értelmetlennek bizonyulnak, például:
+Fontos megjegyezni, hogy a generált lekérdezéseknek a konkrét Train Benchmark modelleben nem mindig lesz megoldása. Nézzük meg az alábbi példát:
  \begin{lstlisting}[style=cyphersmall]
- MATCH ( Var1 : Segment { signal : "String1" }) RETURN Var1
- \end{lstlisting}
- 
- Hiszen a Train Benchmark metamodellje alapján egy szegmensnek nincsen singnal tulajdonsága, tehát egy metamodell alapján felépített gráf adatbázisban nem találnánk a lekérdezésben szereplő mintát. A Neo4j gráfadatbázisára viszont igaz, hogy csak enyhén típusos, ezért igazából nem kezel metamodelleket adatbázis szinten, ha akarnánk bele tudnánk írni egy olyan csomópontot, ami Segment címkét kap és signal tulajdonsággal rendelkezik, és a felhasználókat semmi nem akadályozza meg abban, hogy esetleg értelmetlen gráfadatbázist hozzanak létre. így amikor keresünk egy ilyen adatbázisban fel kell hogy legyen készülve ara, hogy olyan dolgot keresünk amit nem találhatunk meg. 
+ MATCH ( Var1 : Segment { signal : "String1" })
+ RETURN Var1 \end{lstlisting}
+ \noindent Hiszen a Train Benchmark metamodellje alapján egy szegmensnek nincsen singnal tulajdonsága, tehát egy metamodell alapján felépített gráf adatbázisban nem találnánk a lekérdezésben szereplő mintát. A Neo4j gráfadatbázisára viszont igaz, hogy nem típusos, így nem készülhet fel a modell alapvető struktúrájára. Ha akarnánk bele tudnánk írni egy olyan csomópontot, ami Segment címkét kap és signal tulajdonsággal rendelkezik, és a felhasználókat semmi nem akadályozza meg abban, hogy esetleg értelmetlen gráfadatbázist hozzanak létre. így amikor keresünk egy ilyen adatbázisban fel kell hogy legyen készülve ara, hogy olyan dolgot keresünk amit nem találhatunk meg. 
 
 \section{Fordítás}
 
-A generált gráfokat az utófeldolgozás után kifejezések  ASG-je ként értelmezem, majd a nyelvtani szabályok fordított irányú alkalmazásával szöveges dokumentummá alakítom. A fordító a szöveggé alakítás során szóközöket rak a szükséges helyekre, behelyettesíti a változók neveit a rájuk mutató referenciákba,  kitölt a nyelvtani szabályokban meghatározott szavakat pl: \cypherStyle{MATCH , RETURN} , illetve megfelelő helyekre  zárójeleket rak. A fordítást az Xtext keretrendszerének segítségével automatizáltam.
+A generált gráfokat az utófeldolgozás után kifejezések  ASG-jeként értelmezem, majd a nyelvtani szabályok fordított irányú alkalmazásával szöveges dokumentummá alakítom. A fordító a szöveggé alakítás során szóközöket rak a szükséges helyekre, behelyettesíti a változók neveit a rájuk mutató referenciákba,  kitölt a nyelvtani szabályokban meghatározott szavakat pl: \cypherStyle{MATCH , RETURN} , illetve megfelelő helyekre  zárójeleket rak. A fordítást az Xtext keretrendszerének segítségével automatizáltam.
 

@@ -6,16 +6,16 @@ Az alábbiakban összefoglalom, a munkámhoz kapcsolódó szakirodalmat. A model
 
 A diverz modell generálás kulcsfontosságú szerepet játszik modell transzformációk, kód generátorok és komplett fejlesztőrendszerek tesztelése során. A mutáció alapú megközelítések \cite{aranega2015towards}, \cite{darabos2008towards},  létező modelleken hajtanak végre véletlenszerű változtatásokat mutációs szabályok alkalmazásával. Más automatizált technikák  \cite{brottier2006metamodel}, \cite{ehrig2009generating}, olyan modelleket generálnak amelyek csak a metamodellhez alkalmazkodnak. Míg ez  az utóbbi megoldás jól skálázódik nagyobb modellekre a mutációs módszerrel generált  modelleknél nincs arra  garancia hogy jólformáltak lesznek.
 
-A modellgeneráló technikák egy nagyobb halmaza bizonyos ígéreteket ad a teszt hatékonyságára. Az ilyen Fehér-Doboz alapú megközelítések \cite{aranega2015towards}, \cite{bordbar2005uml2alloy}, implementáción és transzformáción alapulnak, és általában back-end logikai megoldókat használnak, amelyek nem jól skálázhatóak gráfmodellekre.
+A modellgeneráló technikák egy nagyobb halmaza bizonyos ígéreteket ad a teszt hatékonyságára. Az ilyen white-box alapú megközelítések \cite{aranega2015towards}, \cite{bordbar2005uml2alloy}, implementáción és transzformáción alapulnak, és általában back-end logikai megoldókat használnak, amelyek nem jól skálázhatóak gráfmodellekre.
 
-A fekete doboz megközelítések \cite{buttner2012verification}, \cite{fleurey2007towards}, csak a specifikációját használják fel a nyelvnek, vagy a transzformációnak, így alapvetően  kényszereken illetve részmodelleken alapulnak. Ezekben a megközelítésekben közös, hogy néha egyszerű modelleket generálnak, amelyeknek   növelhető ugyan diverzitása szimmertia-törő predikátumokkal, de nagyobb modellekre nem skálázódnak. Sőt,  a modellek effektív diverzitása is megkérdőjelezhető, mert a jelenlegi modell- transzformációkat tesztelő módszerekben sokkal enyhébb vizsgálatoknak kell csak megfelelni, mint a különböző szoftverek tesztelése során.
+A black-box megközelítések \cite{buttner2012verification}, \cite{fleurey2007towards}, csak a specifikációját használják fel a nyelvnek, vagy a transzformációnak, így alapvetően  kényszereken illetve részmodelleken alapulnak. Ezekben a megközelítésekben közös, hogy néha egyszerű modelleket generálnak, amelyeknek   növelhető ugyan diverzitása szimmertia-törő predikátumokkal, de nagyobb modellekre nem skálázódnak. Sőt,  a modellek effektív diverzitása is megkérdőjelezhető, mert a jelenlegi modell- transzformációkat tesztelő módszerekben sokkal enyhébb vizsgálatoknak kell csak megfelelni, mint a különböző szoftverek tesztelése során.
 
 \section{Adatbázis tesztelés}
 
 Az adatbázisok tesztelése nehéz, aktívan kutatott feladat, több hasonló megközelítés is található a szakirodalomban.
 
 
-A miénkhez leghasonlóbb megközelítés a \cite{DBLP:conf} cikkben leírt ADUSA keretrendszer, ami szintén SAT alapú megoldókkal dolgozik, ők Alloy-t \cite{Alloy:Language} , \cite{alloy:kodkod} használnak. Az ő módszerük a miénkkel ellentétben SQL specifikus és nyelv alapján úgy tűnik hogy csak fix méretű modellek generálására alkalmas. A \textsc{Viatra} Solver is támoatja az Alloy-t mint mögöttes megoldót cypher lekérdezések generálására viszon azt tapasztaltam, hogy nem skálázódik elég jól.
+A miénkhez leghasonlóbb megközelítés a \cite{DBLP:conf} cikkben leírt ADUSA keretrendszer, ami szintén SAT alapú megoldókkal dolgozik, ők Alloy-t \cite{Alloy:Language} , \cite{alloy:kodkod} használnak. Az ő módszerük a miénkkel ellentétben SQL specifikus és nyelv alapján úgy tűnik hogy csak fix méretű modellek generálására alkalmas. A \textsc{Viatra} Solver is támoatja az Alloy-t mint mögöttes megoldót cypher lekérdezések generálására viszon azt tapasztaltam, hogy nem skálázódik eléggé. Másrészt a korábbi tapasztalataink alapján \cite{semerath2018iterative} gyenge minőségű tesztkészletet állít elő diverzitás szempontjából.
 
 
 Az \cite{myint2018test} cikk páronkénti fedettség tesztelési módszert javasol adatbázisok tesztelésére. Ez azt jelenti, hogy első lépésben részekre bont egy lekérdezést, majd a másodikban minden részletre felsorol lehetséges részkifejezéseket, majd ezekből a részkifejezésekből készít helyes lekérdezéseket úgy, hogy minden lehetséges részlet pár legalább egyszer szerepeljen. (Anélkül, hogy explicit az összes kombinációt elő kelljen állítani.) Ehhez képest a mi megközelítésünk során nem szükséges explicit felsorolni lekérdezés részleteket, hanem ezeket automatikusan állítjuk elő. Továbbá az általun biztosított fedettség hasonló a  páronkénti fedettséghez, hiszen a generálás során az összes különböző szomszédságú gráfcsomópont felfedezését biztosítjuk.
@@ -31,11 +31,11 @@ A \cite{DBLP} cikkben a módszerünkkel ellentétben white-box alapú adatbázis
 
 
 \section{Adatbázis benchmarkolás}
-Sok adatbázis Benchmark létezik, egy válogatást a \cite{szarnyas2018train} cikkből emeltem ki az alábbi táblázatba. A táblázat alsó sorában az látható, hogy a benchmarkolásra hány lekérdezést használtak fel. Ezzel szemben munkám során és megközelítőleg 3000 lekérdezést generáltam. A megközelítésem alkalmazásával így forradalmasítani lehetne az adatbázisok teljesítmény tesztelését. 
+Sok adatbázis Benchmark létezik, egy válogatást a \cite{szarnyas2018train} cikkből emeltem ki az alábbi táblázatba. A táblázat alsó sorában az látható, hogy a benchmarkolásra hány lekérdezést használtak fel. Ezzel szemben munkám során én megközelítőleg 3000 lekérdezést generáltam. Az eddigi benchmarkoklási technikák hiányosságnak a lekérdezések mennyisége tűnik.  Ezáltal a megközelítésem alkalmazásával forradalmasítani lehetne az adatbázisok teljesítmény tesztelését. 
 
 \begin{center}
-	\begin{tabular}{ l | c | c | c | c | c | r }
- LUBM & Barton & SP2Bench & 	BSBM & DBpedia & LDBC SNB &	Train Benchmark \\
+	\begin{tabular}{ c | c | c | c | c | c | c }
+ LUBM & Barton & SP2Bench & 	BSBM & DBpedia & LDBC SNB &	Train Benchmark \\\hline
  14 & 7 & 12 & 12 &	25 & 14 & 	6 \\
 	\end{tabular}
 \end{center}
